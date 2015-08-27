@@ -26,7 +26,8 @@ class PreferenceManager(models.Manager):
                     'title': title,
                     'quantity': 1,
                     'currency_id': 'ARS',
-                    'unit_price': price,
+                    # In case we get something like Decimal:
+                    'unit_price': float(price),
                 }
             ],
             'external_reference': reference
