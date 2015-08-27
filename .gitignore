@@ -1,2 +1,6 @@
 *.pyc
 .*.sw?
+
+build/
+dist/
+django_mercadopago.egg-info/
