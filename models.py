@@ -39,7 +39,8 @@ class PreferenceManager(models.Manager):
             mp_id=preference_result['response']['id'],
             payment_url=preference_result['response']['init_point'],
             sandbox_url=preference_result['response']['sandbox_init_point'],
-            reference=reference,
+            # TODO: Make prefix configurable?
+            reference='django_mercadopago_{}'.format(reference),
         )
 
         preference.save()
