@@ -44,6 +44,8 @@ class PreferenceManager(models.Manager):
         pending_url = pending_url or success_url
         failure_url = failure_url or success_url
 
+        reference = 'django_mercadopago_{}'.format(reference),
+
         # TODO: validate that reference is unused
         preference_request = {
             'items': [
@@ -76,7 +78,7 @@ class PreferenceManager(models.Manager):
             payment_url=pref_result['response']['init_point'],
             sandbox_url=pref_result['response']['sandbox_init_point'],
             # TODO: Make prefix configurable?
-            reference='django_mercadopago_{}'.format(reference),
+            reference=reference,
         )
 
         preference.save()
