@@ -1,6 +1,27 @@
+import logging
+
 from django.conf import settings
 from django.db import models
+from django.db import transaction
+from django.utils.functional import LazyObject
 from mercadopago import MP
+
+logger = logging.getLogger(__name__)
+
+
+class MercadoPagoService(LazyObject):
+    """
+    MercadoPago service (the same one from the SDK), lazy-initialized on first
+    access.
+    """
+
+    def _setup(self):
+        self._wrapped = MP(
+                settings.MERCADOPAGO_CLIENT_ID,
+                settings.MERCADOPAGO_CLIENT_SECRET,
+            )
+
+mercadopago_service = MercadoPagoService()
 
 
 class PreferenceManager(models.Manager):
@@ -8,14 +29,6 @@ class PreferenceManager(models.Manager):
     Wraps mercadopago in a very simple interface that creates and manages
     django objects.
     """
-    mp = None
-
-    def connect(self):
-        if not self.mp:
-            self.mp = MP(
-                settings.MERCADOPAGO_CLIENT_ID,
-                settings.MERCADOPAGO_CLIENT_SECRET,
-            )
 
     def create(self, title, price, reference):
         # TODO: validate that reference is unused
@@ -33,12 +46,12 @@ class PreferenceManager(models.Manager):
             'external_reference': reference
         }
 
-        preference_result = self.mp.create_preference(preference_request)
+        pref_result = mercadopago_service.create_preference(preference_request)
 
         preference = Preference(
-            mp_id=preference_result['response']['id'],
-            payment_url=preference_result['response']['init_point'],
-            sandbox_url=preference_result['response']['sandbox_init_point'],
+            mp_id=pref_result['response']['id'],
+            payment_url=pref_result['response']['init_point'],
+            sandbox_url=pref_result['response']['sandbox_init_point'],
             # TODO: Make prefix configurable?
             reference='django_mercadopago_{}'.format(reference),
         )
