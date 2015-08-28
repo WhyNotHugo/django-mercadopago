@@ -1,7 +1,11 @@
+import logging
+
 from django.conf import settings
 from django.http import HttpResponse
 
 from .models import Notification
+
+logger = logging.getLogger(__name__)
 
 
 def create_notification(request):
