@@ -33,7 +33,17 @@ class PreferenceManager(models.Manager):
     django objects.
     """
 
-    def create(self, title, price, reference):
+    def create(self, title, price, reference, success_url, pending_url=None,
+               failure_url=None):
+        """
+        Creates a new preference and registers it in MercadoPago's API.
+
+        If pending_url or failure_url are None, success_url will be used for
+        these.
+        """
+        pending_url = pending_url or success_url
+        failure_url = failure_url or success_url
+
         # TODO: validate that reference is unused
         preference_request = {
             'items': [
@@ -45,7 +55,12 @@ class PreferenceManager(models.Manager):
                     'unit_price': float(price),
                 }
             ],
-            'external_reference': reference
+            'external_reference': reference,
+            'back_urls': {
+                'success': success_url,
+                'pending': pending_url,
+                'failure': failure_url,
+            },
         }
 
         pref_result = mercadopago_service.create_preference(preference_request)
