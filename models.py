@@ -85,7 +85,7 @@ class Payment(models.Model):
     A payment received, related to a preference.
     """
 
-    mp_id = models.IntegerField()
+    mp_id = models.IntegerField(unique=True)
 
     preference = models.ForeignKey(
         Preference,
@@ -95,6 +95,67 @@ class Payment(models.Model):
     status_detail = models.CharField(max_length=16)
 
     created = models.DateTimeField()
+    approved = models.DateTimeField()
 
     def __str__(self):
-        return self.mp_id
+        return str(self.mp_id)
+
+
+class Notification(models.Model):
+    """
+    A notification received from MercadoPago.
+    """
+
+    TOPIC_ORDER = 'o'
+    TOPIC_PAYMENT = 'p'
+
+    topic = models.CharField(
+        max_length=1,
+        choices=(
+            (TOPIC_ORDER, 'Merchant Order',),
+            (TOPIC_PAYMENT, 'Payment',),
+        ),
+    )
+    resource_id = models.CharField(max_length=46)
+    # TODO: We need some locking mechanism to deal with concurrency here:
+    processed = models.BooleanField(default=False)
+
+    @transaction.atomic
+    def process(self):
+        """
+        Processes the notification, and returns the generated payment, if
+        applicable.
+        """
+        raw_data = mercadopago_service.get_payment_info(self.resource_id)
+        if raw_data['status'] != 200:
+            logger.info('Got non-200 for notification {}.', self.id)
+            return None
+
+        reference = raw_data['response']['collection']['external_reference']
+
+        try:
+            preference = Preference.objects.get(reference=reference)
+        except Preference.DoesNotExist:
+            logger.info(
+                "Got notification for a preference that's not ours. Ignoring"
+            )
+            return
+
+        # XXX TODO: The payment might exist. Deal with it.
+
+        payment = Payment(
+            mp_id=raw_data['response']['collection']['id'],
+            preference=preference,
+            status=raw_data['response']['collection']['status'],
+            status_detail=raw_data['response']['collection']['status_detail'],
+            created=raw_data['response']['collection']['date_created'],
+            approved=raw_data['response']['collection']['date_approved'],
+        )
+        self.processed = True
+
+        payment.save()
+        self.save()
+        return payment
+
+    def __str__(self):
+        return '{} {}'.format(self.topic, self.resource_id)
