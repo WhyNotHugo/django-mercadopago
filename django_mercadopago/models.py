@@ -180,16 +180,18 @@ class Notification(models.Model):
             )
             return
 
-        # XXX TODO: The payment might exist. Deal with it.
+        mp_id = raw_data['response']['collection']['id']
+        try:
+            payment = Payment.objects.get(mp_id=mp_id)
+        except payment.DoesNotExist:
+            payment = Payment(mp_id=mp_id)
 
-        payment = Payment(
-            mp_id=raw_data['response']['collection']['id'],
-            preference=preference,
-            status=raw_data['response']['collection']['status'],
-            status_detail=raw_data['response']['collection']['status_detail'],
-            created=raw_data['response']['collection']['date_created'],
-            approved=raw_data['response']['collection']['date_approved'],
-        )
+        payment.preference = preference
+        payment.status = raw_data['response']['collection']['status']
+        payment.status_detail = \
+            raw_data['response']['collection']['status_detail']
+        payment.created = raw_data['response']['collection']['date_created']
+        payment.approved = raw_data['response']['collection']['date_approved']
         self.processed = True
 
         payment.save()
