@@ -16,10 +16,13 @@ class MercadoPagoService(LazyObject):
     """
 
     def _setup(self):
-        self._wrapped = MP(
+        mp = MP(
                 settings.MERCADOPAGO_CLIENT_ID,
                 settings.MERCADOPAGO_CLIENT_SECRET,
-            )
+        )
+        mp.sandbox(settings.MERCADOPAGO_SANDBOX)
+        self._wrapped = mp
+
 
 mercadopago_service = MercadoPagoService()
 
@@ -75,6 +78,13 @@ class Preference(models.Model):
     reference = models.TextField(unique=True)
 
     objects = PreferenceManager()
+
+    @property
+    def url(self):
+        if settings.MERCADOPAGO_SANDBOX:
+            return self.sandbox_url
+        else:
+            return self.payment_url
 
     def __str__(self):
         return self.mp_id
