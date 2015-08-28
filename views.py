@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.http import HttpResponse
 
 from .models import Notification
@@ -33,5 +34,9 @@ def create_notification(request):
     if not created:
         notification.processed = False
         notification.save()
+
+    if not settings.MERCADOPAGO_ASYNC:
+        notification.process()
+    # TODO: Else add to some queue?
 
     return HttpResponse("<h1>200 OK</h1>", status=201)
