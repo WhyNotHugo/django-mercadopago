@@ -65,6 +65,12 @@ class PreferenceManager(models.Manager):
 
         pref_result = mercadopago_service.create_preference(preference_request)
 
+        if pref_result['status'] >= 300:
+            logger.warning('MercadoPago returned non-200', pref_result)
+            raise Exception(
+                'MercadoPago failed to create preference', pref_result
+            )
+
         preference = Preference(
             mp_id=pref_result['response']['id'],
             payment_url=pref_result['response']['init_point'],
