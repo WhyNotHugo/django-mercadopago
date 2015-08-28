@@ -20,7 +20,7 @@ class MercadoPagoService(LazyObject):
                 settings.MERCADOPAGO_CLIENT_ID,
                 settings.MERCADOPAGO_CLIENT_SECRET,
         )
-        mp.sandbox(settings.MERCADOPAGO_SANDBOX)
+        mp.sandbox_mode(settings.MERCADOPAGO_SANDBOX)
         self._wrapped = mp
 
 
@@ -35,7 +35,6 @@ class PreferenceManager(models.Manager):
 
     def create(self, title, price, reference):
         # TODO: validate that reference is unused
-        self.connect()
         preference_request = {
             'items': [
                 {
