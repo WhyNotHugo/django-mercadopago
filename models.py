@@ -120,6 +120,8 @@ class Notification(models.Model):
     # TODO: We need some locking mechanism to deal with concurrency here:
     processed = models.BooleanField(default=False)
 
+    last_update = models.DateTimeField(auto_now=True)
+
     class Meta:
         unique_together = (
             ('topic', 'resource_id',),
