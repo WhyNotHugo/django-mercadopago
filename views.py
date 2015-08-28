@@ -18,14 +18,20 @@ def create_notification(request):
             status=400
         )
 
-    notification = Notification(resource_id=resource_id)
-
     if topic == 'merchant_order':
-        notification.topic = Notification.TOPIC_ORDER
+        topic = Notification.TOPIC_ORDER
     elif topic == 'payment':
-        notification.topic = Notification.TOPIC_PAYMENT
+        topic = Notification.TOPIC_PAYMENT
     else:
         return HttpResponse('invalid topic', status=400)
 
-    notification.save()
-    return HttpResponse("<h1>201 Created</h1>", status=201)
+    notification, created = Notification.objects.get_or_create(
+        topic=topic,
+        resource_id=resource_id,
+    )
+
+    if not created:
+        notification.processed = False
+        notification.save()
+
+    return HttpResponse("<h1>200 OK</h1>", status=201)
