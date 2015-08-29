@@ -2,9 +2,8 @@ django-mercadopago-simple
 =========================
 
 **django-mercadopago-simple** is a simple django application for interacting with
-MercadoPago[mercadopago], aiming to be rather simple, and only covers the basic uses cases.
-
-[mercadopago]: https://www.mercadopago.com.ar/
+`MercadoPago <https://www.mercadopago.com.ar/>`_, aiming to be rather simple,
+and only covers the basic uses cases.
 
 Features
 --------
@@ -20,7 +19,7 @@ again, accepted if you submit a patch.
 Usage
 -----
 
-The following settings apply to this application:
+The following settings apply to this application::
 
     MERCADOPAGO_CLIENT_ID = 123456789
     MERCADOPAGO_CLIENT_SECRET = 'asdf123'
@@ -30,7 +29,7 @@ The following settings apply to this application:
 
 NOTE: Asynchronous notification processing is still WIP.
 
-To charge a user, you need to create a `Preference`:
+To charge a user, you need to create a ``Preference``::
 
     self.preference = Preference.objects.create(
         title='the product name',
@@ -40,15 +39,14 @@ To charge a user, you need to create a `Preference`:
     )
 
 You can use the IPN to listen to payment notifications. You'll need to
-configure them [here][notifications] and then expose the endpoint by adding the
-following to your `urls.py`:
+configure them `here
+<https://www.mercadopago.com/mla/herramientas/notificaciones>`_ and then expose
+the endpoint by adding the following to your ``urls.py``::
 
     url(r'^mercadopago/', include('django_mercadopago.urls')),
 
-[notifications]: https://www.mercadopago.com/mla/herramientas/notificaciones
-
-Finally, you can handle payment notifications in real time using a post_update
-hook:
+Finally, you can handle payment notifications in real time using a
+``post_update`` hook::
 
     @receiver(post_save, sender=MercadoPagoPayment)
     def process_payment(sender, instance=None, created=False, **kwargs):

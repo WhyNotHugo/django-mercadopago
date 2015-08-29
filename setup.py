@@ -10,6 +10,7 @@ setup(
     url='https://gitlab.com/hobarrera/django-mercadopago',
     license='ISC',
     packages=find_packages(),
+    long_description=open('README.rst').read(),
     install_requires=open('requirements.txt').readlines(),
     use_scm_version={'version_scheme': 'post-release'},
     setup_requires=['setuptools_scm'],
