@@ -1,11 +1,8 @@
-django-mercadopago
-==================
+django-mercadopago-simple
+=========================
 
-**django-mercadopago** is a django application for interacting with
-MercadoPago[mercadopago].
-
-While somewhat incomplete, it's under heavy development since it's to be used
-in a soon-to-be-released product.
+**django-mercadopago-simple** is a simple django application for interacting with
+MercadoPago[mercadopago], aiming to be rather simple, and only covers the basic uses cases.
 
 [mercadopago]: https://www.mercadopago.com.ar/
 
