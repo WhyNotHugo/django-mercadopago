@@ -13,8 +13,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Notification',
             fields=[
-                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
-                ('topic', models.CharField(max_length=1, choices=[('o', 'Merchant Order'), ('p', 'Payment')])),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('topic', models.CharField(choices=[('o', 'Merchant Order'), ('p', 'Payment')], max_length=1)),
                 ('resource_id', models.CharField(max_length=46)),
                 ('processed', models.BooleanField(default=False)),
                 ('last_update', models.DateTimeField(auto_now=True)),
@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Payment',
             fields=[
-                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('mp_id', models.IntegerField(unique=True)),
                 ('status', models.CharField(max_length=16)),
                 ('status_detail', models.CharField(max_length=16)),
@@ -34,17 +34,17 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Preference',
             fields=[
-                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('mp_id', models.CharField(max_length=46)),
                 ('payment_url', models.URLField()),
                 ('sandbox_url', models.URLField()),
-                ('reference', models.TextField(unique=True)),
+                ('reference', models.CharField(max_length=128, unique=True)),
             ],
         ),
         migrations.AddField(
             model_name='payment',
             name='preference',
-            field=models.ForeignKey(to='mp.Preference', related_name='payments'),
+            field=models.ForeignKey(related_name='payments', to='mp.Preference'),
         ),
         migrations.AlterUniqueTogether(
             name='notification',

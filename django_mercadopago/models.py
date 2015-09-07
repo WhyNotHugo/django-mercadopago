@@ -44,7 +44,7 @@ class PreferenceManager(models.Manager):
         pending_url = pending_url or success_url
         failure_url = failure_url or success_url
 
-        reference = 'django_mercadopago_{}'.format(reference),
+        reference = 'django_mercadopago_{}'.format(reference)
 
         # TODO: validate that reference is unused
         preference_request = {
@@ -97,7 +97,10 @@ class Preference(models.Model):
 
     payment_url = models.URLField()
     sandbox_url = models.URLField()
-    reference = models.TextField(unique=True)
+    reference = models.CharField(
+        max_length=128,
+        unique=True,
+    )
 
     objects = PreferenceManager()
 
@@ -170,7 +173,7 @@ class Notification(models.Model):
             logger.info('Got non-200 for notification {}.', self.id)
             return None
 
-        reference = raw_data['response']['collection']['external_reference']
+        reference = raw_data['response']['collection']['external_reference'][0]
 
         try:
             preference = Preference.objects.get(reference=reference)
