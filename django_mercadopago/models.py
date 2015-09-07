@@ -186,7 +186,7 @@ class Notification(models.Model):
         mp_id = raw_data['response']['collection']['id']
         try:
             payment = Payment.objects.get(mp_id=mp_id)
-        except payment.DoesNotExist:
+        except Payment.DoesNotExist:
             payment = Payment(mp_id=mp_id)
 
         payment.preference = preference
