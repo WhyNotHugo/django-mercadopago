@@ -2,12 +2,14 @@ import logging
 
 from django.conf import settings
 from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import Notification
 
 logger = logging.getLogger(__name__)
 
 
+@csrf_exempt
 def create_notification(request):
     topic = request.GET.get('topic', None)
     resource_id = request.GET.get('id', None)
