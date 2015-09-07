@@ -173,7 +173,7 @@ class Notification(models.Model):
             logger.info('Got non-200 for notification {}.', self.id)
             return None
 
-        reference = raw_data['response']['collection']['external_reference'][0]
+        reference = raw_data['response']['collection']['external_reference']
 
         try:
             preference = Preference.objects.get(reference=reference)
