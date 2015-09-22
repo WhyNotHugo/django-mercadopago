@@ -27,6 +27,9 @@ The following settings apply to this application::
     # Process notifications as soon as they are received.
     MERCADOPAGO_ASYNC = False
 
+You can obtain your application client id and secret `here
+<https://applications.mercadopago.com/>`_
+
 NOTE: Asynchronous notification processing is still WIP.
 
 To charge a user, you need to create a ``Preference``::
