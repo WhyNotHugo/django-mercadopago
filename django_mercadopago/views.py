@@ -10,18 +10,20 @@ logger = logging.getLogger(__name__)
 
 
 @csrf_exempt
-def create_notification(request):
+def create_notification(request, pk):
     topic = request.GET.get('topic', None)
     resource_id = request.GET.get('id', None)
 
     if topic is None:
         return HttpResponse(
-            '<h1>400 Bad Request.</h1>Missing parameter topic',
+            '<h1>400 Bad Request.</h1>'
+            'Missing parameter topic',
             status=400
         )
     if resource_id is None:
         return HttpResponse(
-            '<h1>400 Bad Request.</h1>Missing parameter id',
+            '<h1>400 Bad Request.</h1>'
+            'Missing parameter id',
             status=400
         )
 
@@ -35,6 +37,7 @@ def create_notification(request):
     notification, created = Notification.objects.get_or_create(
         topic=topic,
         resource_id=resource_id,
+        owner_id=pk,
     )
 
     if not created:

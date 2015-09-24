@@ -1,30 +1,60 @@
 import logging
 
 from django.conf import settings
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.db import transaction
-from django.utils.functional import LazyObject
+from django.utils.translation import ugettext as _
 from mercadopago import MP
 
 logger = logging.getLogger(__name__)
 
 
-class MercadoPagoService(LazyObject):
+class MercadoPagoService(MP):
     """
     MercadoPago service (the same one from the SDK), lazy-initialized on first
     access.
     """
 
-    def _setup(self):
-        mp = MP(
-                settings.MERCADOPAGO_CLIENT_ID,
-                settings.MERCADOPAGO_CLIENT_SECRET,
-        )
-        mp.sandbox_mode(settings.MERCADOPAGO_SANDBOX)
-        self._wrapped = mp
+    def __init__(self, account):
+        super().__init__(account.app_id, account.secret_key)
+        self.sandbox_mode(account.sandbox)
 
 
-mercadopago_service = MercadoPagoService()
+class Account(models.Model):
+    """
+    A mercadopago account, aka "application".
+    """
+    name = models.CharField(
+        _('name'),
+        max_length=32,
+        help_text=_('A friendly name to recognize this account.'),
+    )
+    slug = models.SlugField(
+        _('slug'),
+        help_text=_("This slug is used for this account's notification URL.")
+    )
+    app_id = models.CharField(
+        _('client id'),
+        max_length=16,
+        help_text=_('The APP_ID given by MercadoPago.'),
+    )
+    secret_key = models.CharField(
+        _('client id'),
+        max_length=32,
+        help_text=_('The SECRET_KEY given by MercadoPago.'),
+    )
+    sandbox = models.BooleanField(
+        _('sandbox'),
+        default=True,
+        help_text=_(
+            'Indicates if this account uses the sandbox mode, '
+            'indicated for testing rather than real transactions.'
+        ),
+    )
+
+    def get_service(self):
+        return MercadoPagoService(self)
 
 
 class PreferenceManager(models.Manager):
@@ -33,8 +63,8 @@ class PreferenceManager(models.Manager):
     django objects.
     """
 
-    def create(self, title, price, reference, success_url, pending_url=None,
-               failure_url=None):
+    def create(self, title, price, reference, account, success_url,
+               pending_url=None, failure_url=None):
         """
         Creates a new preference and registers it in MercadoPago's API.
 
@@ -44,8 +74,8 @@ class PreferenceManager(models.Manager):
         pending_url = pending_url or success_url
         failure_url = failure_url or success_url
 
-        reference = 'django_mercadopago_{}'.format(reference)
-
+        notification_url = settings.MERCADOPAGO_BASE_HOST + \
+            reverse('mp:notifications', args=(1,))
         # TODO: validate that reference is unused
         preference_request = {
             'items': [
@@ -63,8 +93,10 @@ class PreferenceManager(models.Manager):
                 'pending': pending_url,
                 'failure': failure_url,
             },
+            'notification_url': notification_url,
         }
 
+        mercadopago_service = account.get_service()
         pref_result = mercadopago_service.create_preference(preference_request)
 
         if pref_result['status'] >= 300:
@@ -95,9 +127,14 @@ class Preference(models.Model):
     # Doc says it's a UUID. It's not.
     mp_id = models.CharField(max_length=46)
 
-    payment_url = models.URLField()
-    sandbox_url = models.URLField()
+    payment_url = models.URLField(
+        _('payment url'),
+    )
+    sandbox_url = models.URLField(
+        _('sandbox url'),
+    )
     reference = models.CharField(
+        _('reference'),
         max_length=128,
         unique=True,
     )
@@ -120,17 +157,38 @@ class Payment(models.Model):
     A payment received, related to a preference.
     """
 
-    mp_id = models.IntegerField(unique=True)
+    mp_id = models.IntegerField(
+        _('mp id'),
+        unique=True,
+    )
 
     preference = models.ForeignKey(
         Preference,
+        verbose_name=_('preference'),
         related_name='payments',
     )
-    status = models.CharField(max_length=16)
-    status_detail = models.CharField(max_length=16)
+    status = models.CharField(
+        _('status'),
+        max_length=16,
+    )
+    status_detail = models.CharField(
+        _('status detail'),
+        max_length=16,
+    )
 
-    created = models.DateTimeField()
-    approved = models.DateTimeField()
+    created = models.DateTimeField(
+        _('created'),
+    )
+    approved = models.DateTimeField(
+        _('approved'),
+    )
+
+    notification = models.OneToOneField(
+        'Notification',
+        verbose_name=_('notification'),
+        related_name='payment',
+        help_text=_('The notification that informed us of this payment.'),
+    )
 
     def __str__(self):
         return str(self.mp_id)
@@ -144,6 +202,26 @@ class Notification(models.Model):
     TOPIC_ORDER = 'o'
     TOPIC_PAYMENT = 'p'
 
+    STATUS_UNPROCESSED = 'unp'
+    STATUS_OK = 'ok'
+    STATUS_404 = '404'
+    # More statuses will probably appear here...
+
+    owner = models.ForeignKey(
+        Account,
+        verbose_name=_('owner'),
+        related_name='notifications',
+    )
+    status = models.CharField(
+        _('status'),
+        max_length=3,
+        choices=(
+            (STATUS_UNPROCESSED, _('Unprocessed')),
+            (STATUS_OK, _('Okay')),
+            (STATUS_404, _('Error 404')),
+        ),
+        default=STATUS_UNPROCESSED,
+    )
     topic = models.CharField(
         max_length=1,
         choices=(
@@ -151,11 +229,19 @@ class Notification(models.Model):
             (TOPIC_PAYMENT, 'Payment',),
         ),
     )
-    resource_id = models.CharField(max_length=46)
-    # TODO: We need some locking mechanism to deal with concurrency here:
-    processed = models.BooleanField(default=False)
+    resource_id = models.CharField(
+        _('resource_id'),
+        max_length=46,
+    )
+    processed = models.BooleanField(
+        _('processed'),
+        default=False,
+    )
 
-    last_update = models.DateTimeField(auto_now=True)
+    last_update = models.DateTimeField(
+        _('last_update'),
+        auto_now=True,
+    )
 
     class Meta:
         unique_together = (
@@ -168,10 +254,24 @@ class Notification(models.Model):
         Processes the notification, and returns the generated payment, if
         applicable.
         """
+        if self.topic == Notification.TOPIC_ORDER:
+            logger.info("We don't process order notifications yet")
+            self.processed = True
+            self.save()
+            return
+
+        mercadopago_service = self.owner.get_service()
         raw_data = mercadopago_service.get_payment_info(self.resource_id)
+
         if raw_data['status'] != 200:
-            logger.info('Got non-200 for notification {}.', self.id)
-            return None
+            logger.warning(
+                'Got status code %d for notification %d.',
+                raw_data['status'],
+                self.id
+            )
+            self.status = Notification.STATUS_404
+            self.processed = True
+            return
 
         reference = raw_data['response']['collection']['external_reference']
 
@@ -195,6 +295,7 @@ class Notification(models.Model):
             raw_data['response']['collection']['status_detail']
         payment.created = raw_data['response']['collection']['date_created']
         payment.approved = raw_data['response']['collection']['date_approved']
+        payment.notification = self
         self.processed = True
 
         payment.save()
