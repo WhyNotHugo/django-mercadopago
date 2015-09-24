@@ -303,4 +303,4 @@ class Notification(models.Model):
         return payment
 
     def __str__(self):
-        return '{} {}'.format(self.topic, self.resource_id)
+        return '{} {}'.format(self.get_topic_display(), self.resource_id)
