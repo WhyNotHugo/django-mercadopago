@@ -1,0 +1,104 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-09-23 23:58-0300\n"
+"PO-Revision-Date: 2015-09-23 23:24-0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.8.4\n"
+
+msgid "name"
+msgstr "nombre"
+
+msgid "A friendly name to recognize this account."
+msgstr "Un nombre amigable para reconocer esta cuenta."
+
+msgid "slug"
+msgstr "slug"
+
+msgid "This slug is used for this account's notification URL."
+msgstr "El slug es usado para la URL de notificaciones de esta cuenta."
+
+msgid "client id"
+msgstr "id de cliente"
+
+msgid "The APP_ID given by MercadoPago."
+msgstr "El APP_ID dato por MercadoPago."
+
+msgid "The SECRET_KEY given by MercadoPago."
+msgstr "El SECRET_KEY dado por MercadoPago."
+
+msgid "sandbox"
+msgstr "sandbox"
+
+msgid ""
+"Indicates if this account uses the sandbox mode, indicated for testing "
+"rather than real transactions."
+msgstr ""
+"Indica si esta cuenta usa el modo sandbox, indicado para pruebas, en vez de "
+"transacciones reales."
+
+msgid "payment url"
+msgstr "url de pagos"
+
+msgid "sandbox url"
+msgstr "url de sanbox"
+
+msgid "reference"
+msgstr "referencia"
+
+msgid "mp id"
+msgstr "mp id"
+
+msgid "preference"
+msgstr "preferencia"
+
+msgid "status"
+msgstr "estado"
+
+msgid "status detail"
+msgstr "detalles de estado"
+
+msgid "created"
+msgstr "creado"
+
+msgid "approved"
+msgstr "aprovado"
+
+msgid "notification"
+msgstr "notificación"
+
+msgid "The notification that informed us of this payment."
+msgstr "La notificación que nos informó de este pago."
+
+msgid "owner"
+msgstr "dueño"
+
+msgid "Unprocessed"
+msgstr "Sin procesar"
+
+msgid "Okay"
+msgstr "Okay"
+
+msgid "Error 404"
+msgstr "Error 404"
+
+msgid "resource_id"
+msgstr "id de recurso"
+
+msgid "processed"
+msgstr "procesado"
+
+msgid "last_update"
+msgstr "última actualización"
