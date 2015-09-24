@@ -16,37 +16,57 @@ Pull requests are always welcome. Please don't hesitate to open an issue if you
 encounter a problem. New features will generally only be added as needed, but
 again, accepted if you submit a patch.
 
-Usage
------
+Installation
+------------
+
+Installation should generally be done via pip::
+
+    pip install django-mercadopago-simple
+
+Configuration
+-------------
 
 The following settings apply to this application::
 
-    MERCADOPAGO_CLIENT_ID = 123456789
-    MERCADOPAGO_CLIENT_SECRET = 'asdf123'
-    MERCADOPAGO_SANDBOX = False
-    # Process notifications as soon as they are received.
+    # Process notifications as soon as they are received:
     MERCADOPAGO_ASYNC = False
-
-You can obtain your application client id and secret `here
-<https://applications.mercadopago.com/>`_
+    # This is the hostname where your server will receive notifications:
+    # Notifcation URLs will be sent with your preferences prefixing this to
+    # their URLs.
+    MERCADOPAGO_BASE_HOST = 'https://example.com/'
 
 NOTE: Asynchronous notification processing is still WIP.
 
-To charge a user, you need to create a ``Preference``::
+You'll also want to link your MercadoPago credentials to this app - maybe just
+yours, maybe multiple accounts.
+
+Once you've obtained your application ``app id`` and ``secret key`` `here
+<https://applications.mercadopago.com/>`_, you'll want to create an ``Account``
+object with them. This can be done via the django admin included with this app.
+
+You should also expose the notifications endpoints like this::
+
+    url(r'^mercadopago/', include('django_mercadopago.urls'), namespace='mp'),
+    # Make sure namespace is 'mp', since we assume it is for notification URL
+    # contruction.
+
+Usage
+-----
+
+MercadoPago lets you create preferences, for which you'll later receive
+notifications (indicating if it was payed, or what happened)::
 
     self.preference = Preference.objects.create(
         title='the product name',
         price=10.0,
         reference='order-38452',
         success_url='http://example.com/mp_done',
+        account=account,
     )
 
-You can use the IPN to listen to payment notifications. You'll need to
-configure them `here
-<https://www.mercadopago.com/mla/herramientas/notificaciones>`_ and then expose
-the endpoint by adding the following to your ``urls.py``::
+If your app will only be using a single MercadoPago account, just use::
 
-    url(r'^mercadopago/', include('django_mercadopago.urls')),
+    account = Account.objects.first()
 
 Finally, you can handle payment notifications in real time using a
 ``post_update`` hook::
@@ -54,6 +74,16 @@ Finally, you can handle payment notifications in real time using a
     @receiver(post_save, sender=MercadoPagoPayment)
     def process_payment(sender, instance=None, created=False, **kwargs):
         do_stuff()
+
+Backwards compatibility
+-----------------------
+
+Version 2.0.0 changes the database schema quite a bit. While older data is
+retained, some missing fields had to be filled. Auto-generated data will have
+negative key values, and should easily be recognizable.
+
+Regrettably, filling in this data is not possible. However, there is no data
+loss involved.
 
 Licence
 -------
