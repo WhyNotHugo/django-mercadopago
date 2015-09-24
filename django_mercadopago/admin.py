@@ -14,6 +14,33 @@ class AccountAdmin(admin.ModelAdmin):
     }
 
 
-admin.site.register(models.Payment)
-admin.site.register(models.Preference)
-admin.site.register(models.Notification)
+@admin.register(models.Preference)
+class PreferenceAdmin(admin.ModelAdmin):
+    list_display = (
+        'mp_id',
+        'reference',
+    )
+
+
+@admin.register(models.Payment)
+class PaymentAdmin(admin.ModelAdmin):
+    list_display = (
+        'mp_id',
+        'status',
+        'status_detail',
+        'created',
+        'approved',
+    )
+
+
+@admin.register(models.Notification)
+class NotificationAdmin(admin.ModelAdmin):
+    list_display = (
+        'id',
+        'owner',
+        'topic',
+        'resource_id',
+        'processed',
+        'status',
+        'last_update',
+    )

@@ -53,6 +53,9 @@ class Account(models.Model):
         ),
     )
 
+    def __str__(self):
+        return self.name
+
     def get_service(self):
         return MercadoPagoService(self)
 
