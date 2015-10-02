@@ -78,7 +78,7 @@ class PreferenceManager(models.Manager):
         failure_url = failure_url or success_url
 
         notification_url = settings.MERCADOPAGO_BASE_HOST + \
-            reverse('mp:notifications', args=(1,))
+            reverse('mp:notifications', args=(account.slug,))
         # TODO: validate that reference is unused
         preference_request = {
             'items': [

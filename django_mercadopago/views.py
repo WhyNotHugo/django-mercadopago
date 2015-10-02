@@ -4,13 +4,15 @@ from django.conf import settings
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import Notification
+from .models import Notification, Account
 
 logger = logging.getLogger(__name__)
 
 
+# Maybe use a form for this? :D
+
 @csrf_exempt
-def create_notification(request, pk):
+def create_notification(request, slug):
     topic = request.GET.get('topic', None)
     resource_id = request.GET.get('id', None)
 
@@ -34,10 +36,11 @@ def create_notification(request, pk):
     else:
         return HttpResponse('invalid topic', status=400)
 
+    owner = Account.objects.get(slug=slug)
     notification, created = Notification.objects.get_or_create(
         topic=topic,
         resource_id=resource_id,
-        owner_id=pk,
+        owner=owner,
     )
 
     if not created:
