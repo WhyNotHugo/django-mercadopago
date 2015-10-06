@@ -36,7 +36,11 @@ def create_notification(request, slug):
     else:
         return HttpResponse('invalid topic', status=400)
 
-    owner = Account.objects.get(slug=slug)
+    try:
+        owner = Account.objects.get(slug=slug)
+    except Account.DoesNotExist:
+        return HttpResponse('Unknown account/slug', status=400)
+
     notification, created = Notification.objects.get_or_create(
         topic=topic,
         resource_id=resource_id,
