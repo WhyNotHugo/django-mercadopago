@@ -9,6 +9,11 @@ def fake_data(apps, schema_editor):
     Notification = apps.get_model('mp', 'Notification')
     Payment = apps.get_model('mp', 'Payment')
 
+    # Only generate this if we have actual data in the DB:
+    if Account.objects.count() + Notification.objects.count() + \
+       Payment.objects.count() == 0:
+        return
+
     account = Account.objects.create(
         name="Auto-migrated",
         slug="_",
