@@ -66,19 +66,19 @@ class PreferenceManager(models.Manager):
     django objects.
     """
 
-    def create(self, title, price, reference, account, success_url,
-               pending_url=None, failure_url=None):
+    def create(self, title, price, reference, account,
+               host=settings.MERCADOPAGO_BASE_HOST):
         """
         Creates a new preference and registers it in MercadoPago's API.
-
-        If pending_url or failure_url are None, success_url will be used for
-        these.
         """
-        pending_url = pending_url or success_url
-        failure_url = failure_url or success_url
 
-        notification_url = settings.MERCADOPAGO_BASE_HOST + \
-            reverse('mp:notifications', args=(account.slug,))
+        notification_url = host + reverse(
+            'mp:notifications', args=(account.slug,)
+        )
+        return_url = host + reverse(
+            'mp:post_payment', args=(account.slug,)
+        )
+
         # TODO: validate that reference is unused
         preference_request = {
             'items': [
@@ -92,9 +92,9 @@ class PreferenceManager(models.Manager):
             ],
             'external_reference': reference,
             'back_urls': {
-                'success': success_url,
-                'pending': pending_url,
-                'failure': failure_url,
+                'success': return_url,
+                'pending': return_url,
+                'failure': return_url,
             },
             'notification_url': notification_url,
         }
