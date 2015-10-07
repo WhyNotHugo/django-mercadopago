@@ -1,5 +1,5 @@
-wheel==0.24.0
-Django==1.8.4
+wheel==0.26.0
+Django==1.8.5
 mercadopago==0.3.4
 setuptools-git==1.1
-setuptools-scm==1.7.0
+setuptools-scm==1.8.0
