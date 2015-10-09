@@ -114,6 +114,7 @@ class PreferenceManager(models.Manager):
             sandbox_url=pref_result['response']['sandbox_init_point'],
             # TODO: Make prefix configurable?
             reference=reference,
+            owner=account,
         )
 
         preference.save()
@@ -126,6 +127,12 @@ class Preference(models.Model):
     Price and other data is send to MP and not stored locally - it's assumed
     it's part of the model that relates to this one.
     """
+
+    owner = models.ForeignKey(
+        Account,
+        verbose_name=_('owner'),
+        related_name='preferences',
+    )
 
     # Doc says it's a UUID. It's not.
     mp_id = models.CharField(max_length=46)
@@ -146,7 +153,7 @@ class Preference(models.Model):
 
     @property
     def url(self):
-        if settings.MERCADOPAGO_SANDBOX:
+        if self.owner.sandbox:
             return self.sandbox_url
         else:
             return self.payment_url
