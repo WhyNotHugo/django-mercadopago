@@ -215,6 +215,7 @@ class Notification(models.Model):
     STATUS_UNPROCESSED = 'unp'
     STATUS_OK = 'ok'
     STATUS_404 = '404'
+    STATUS_ERROR = 'err'
     # More statuses will probably appear here...
 
     owner = models.ForeignKey(
@@ -229,6 +230,7 @@ class Notification(models.Model):
             (STATUS_UNPROCESSED, _('Unprocessed')),
             (STATUS_OK, _('Okay')),
             (STATUS_404, _('Error 404')),
+            (STATUS_ERROR, _('Error')),
         ),
         default=STATUS_UNPROCESSED,
     )
@@ -279,8 +281,13 @@ class Notification(models.Model):
                 raw_data['status'],
                 self.id
             )
-            self.status = Notification.STATUS_404
+            if raw_data['status'] == 404:
+                self.status = Notification.STATUS_404
+            else:
+                self.status = Notification.STATUS_ERROR
+
             self.processed = True
+            self.save()
             return
 
         reference = raw_data['response']['collection']['external_reference']
