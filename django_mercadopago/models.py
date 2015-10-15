@@ -148,6 +148,11 @@ class Preference(models.Model):
         max_length=128,
         unique=True,
     )
+    paid = models.BooleanField(
+        _('paid'),
+        default=False,
+        help_text=_('Indicates if the preference has been paid.'),
+    )
 
     objects = PreferenceManager()
 
@@ -314,6 +319,11 @@ class Notification(models.Model):
         payment.approved = raw_data['response']['collection']['date_approved']
         payment.notification = self
         self.processed = True
+
+        if payment.status == 'approved' and \
+           payment.status_detail == 'accredited':
+            preference.paid = True
+            preference.save()
 
         payment.save()
         self.save()
