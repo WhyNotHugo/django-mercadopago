@@ -32,6 +32,7 @@ class Account(models.Model):
     )
     slug = models.SlugField(
         _('slug'),
+        unique=True,
         help_text=_("This slug is used for this account's notification URL.")
     )
     app_id = models.CharField(
