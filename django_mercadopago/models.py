@@ -109,6 +109,8 @@ class PreferenceManager(models.Manager):
             )
 
         preference = Preference(
+            title=title,
+            price=price,
             mp_id=pref_result['response']['id'],
             payment_url=pref_result['response']['init_point'],
             sandbox_url=pref_result['response']['sandbox_init_point'],
@@ -124,7 +126,8 @@ class PreferenceManager(models.Manager):
 class Preference(models.Model):
     """
     An MP payment preference.
-    Price and other data is send to MP and not stored locally - it's assumed
+
+    Related data is send to MP and not stored locally - it's assumed
     it's part of the model that relates to this one.
     """
 
@@ -135,7 +138,20 @@ class Preference(models.Model):
     )
 
     # Doc says it's a UUID. It's not.
-    mp_id = models.CharField(max_length=46)
+    title = models.CharField(
+        _('title'),
+        max_length=256,
+    )
+    price = models.DecimalField(
+        _('price'),
+        max_digits=15,
+        decimal_places=2,
+    )
+    mp_id = models.CharField(
+        _('mercadopago id'),
+        max_length=46,
+        help_text=_('The id MercadoPago has assigned for this Preference')
+    )
 
     payment_url = models.URLField(
         _('payment url'),
