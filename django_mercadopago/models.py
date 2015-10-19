@@ -179,6 +179,28 @@ class Preference(models.Model):
         else:
             return self.payment_url
 
+    def update(self, title=None, price=None):
+        """
+        Updates the upstream Preference with the supplied title and price.
+        """
+        self.price = price
+        self.title = title
+
+        service = self.owner.get_service()
+        service.update_preference(
+            self.mp_id,
+            {
+                'items': [
+                    {
+                        'title': title or self.title,
+                        'quantity': 1,
+                        'currency_id': 'ARS',
+                        'unit_price': float(price or self.price),
+                    }
+                ]
+            }
+        )
+
     def __str__(self):
         return self.mp_id
 
