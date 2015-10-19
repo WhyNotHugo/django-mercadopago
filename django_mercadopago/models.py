@@ -184,8 +184,10 @@ class Preference(models.Model):
         """
         Updates the upstream Preference with the supplied title and price.
         """
-        self.price = price
-        self.title = title
+        if price:
+            self.price = price
+        if title:
+            self.title = title
 
         service = self.owner.get_service()
         service.update_preference(
@@ -193,14 +195,15 @@ class Preference(models.Model):
             {
                 'items': [
                     {
-                        'title': title or self.title,
+                        'title': self.title,
                         'quantity': 1,
                         'currency_id': 'ARS',
-                        'unit_price': float(price or self.price),
+                        'unit_price': float(self.price),
                     }
                 ]
             }
         )
+        self.save()
 
     def __str__(self):
         return self.mp_id
