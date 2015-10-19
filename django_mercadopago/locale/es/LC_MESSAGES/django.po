@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-15 01:10-0300\n"
-"PO-Revision-Date: 2015-10-15 01:10-0300\n"
+"POT-Creation-Date: 2015-10-18 22:05-0300\n"
+"PO-Revision-Date: 2015-10-18 22:05-0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -49,6 +49,21 @@ msgstr ""
 "Indica si esta cuenta usa el modo sandbox, indicado para pruebas, en vez de "
 "transacciones reales."
 
+msgid "owner"
+msgstr "dueño"
+
+msgid "title"
+msgstr "título"
+
+msgid "price"
+msgstr "precio"
+
+msgid "mercadopago id"
+msgstr "id mercadopago"
+
+msgid "The id MercadoPago has assigned for this Preference"
+msgstr "El id que MercadoPago otortó a esta preferencia"
+
 msgid "payment url"
 msgstr "url de pagos"
 
@@ -88,9 +103,6 @@ msgstr "notificación"
 msgid "The notification that informed us of this payment."
 msgstr "La notificación que nos informó de este pago."
 
-msgid "owner"
-msgstr "dueño"
-
 msgid "Unprocessed"
 msgstr "Sin procesar"
 
@@ -99,6 +111,9 @@ msgstr "Okay"
 
 msgid "Error 404"
 msgstr "Error 404"
+
+msgid "Error"
+msgstr "Error"
 
 msgid "resource_id"
 msgstr "id de recurso"
