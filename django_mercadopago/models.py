@@ -7,6 +7,8 @@ from django.db import transaction
 from django.utils.translation import ugettext as _
 from mercadopago import MP
 
+from . import signals
+
 logger = logging.getLogger(__name__)
 
 
@@ -369,6 +371,13 @@ class Notification(models.Model):
 
         payment.save()
         self.save()
+
+        if preference.paid:
+            signals.payment_received.send(
+                sender=self.__class__,
+                payment=payment,
+            )
+
         return payment
 
     def __str__(self):
