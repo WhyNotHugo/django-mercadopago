@@ -78,7 +78,7 @@ class PostPaymentView(View):
         )
 
         if not created:
-            notification.status = Notification.STATUS_UPDATES
+            notification.status = Notification.STATUS_WITH_UPDATES
             notification.save()
 
         if not settings.MERCADOPAGO_ASYNC:
