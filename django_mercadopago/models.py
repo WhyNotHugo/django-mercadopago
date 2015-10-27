@@ -207,8 +207,54 @@ class Preference(models.Model):
         )
         self.save()
 
+    def poll_status(self):
+        """
+        Manually poll for the status of this preference
+        """
+        service = self.owner.get_service()
+        response = service.search_payment({
+            'external_reference': self.reference
+        })
+        if response['response']['results']:
+            logger.info('Polled for %s. Creating Payment', self.pk)
+            return Payment.objects.create_from_raw_data(
+                response['response']['results'][-1]
+            )
+        else:
+            logger.info('Polled for %s. No data', self.pk)
+
     def __str__(self):
         return self.mp_id
+
+
+class PaymentManager(models.Manager):
+
+    def create_from_raw_data(self, raw_data):
+        raw_data = raw_data['collection']
+        preference = Preference.objects.get(
+            reference=raw_data['external_reference'],
+        )
+        payment = Payment(
+            preference=preference,
+            mp_id=raw_data['id'],
+            status=raw_data['status'],
+            status_detail=raw_data['status_detail'],
+            created=raw_data['date_created'],
+            approved=raw_data['date_approved'],
+        )
+        payment.save()
+
+        if payment.status == 'approved' and \
+           payment.status_detail == 'accredited':
+            preference.paid = True
+            preference.save()
+
+            signals.payment_received.send(
+                sender=Preference,
+                payment=payment,
+            )
+
+        return payment
 
 
 class Payment(models.Model):
@@ -247,10 +293,14 @@ class Payment(models.Model):
         verbose_name=_('notification'),
         related_name='payment',
         help_text=_('The notification that informed us of this payment.'),
+        blank=True,
+        null=True,
     )
 
     def __str__(self):
         return str(self.mp_id)
+
+    objects = PaymentManager()
 
 
 class Notification(models.Model):
