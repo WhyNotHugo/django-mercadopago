@@ -40,7 +40,6 @@ class NotificationAdmin(admin.ModelAdmin):
         'owner',
         'topic',
         'resource_id',
-        'processed',
         'status',
         'last_update',
     )

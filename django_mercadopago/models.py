@@ -312,6 +312,8 @@ class Notification(models.Model):
     TOPIC_PAYMENT = 'p'
 
     STATUS_UNPROCESSED = 'unp'
+    STATUS_PROCESSED = 'pro'
+    STATUS_WITH_UPDATES = 'old'
     STATUS_OK = 'ok'
     STATUS_404 = '404'
     STATUS_ERROR = 'err'
@@ -327,6 +329,7 @@ class Notification(models.Model):
         max_length=3,
         choices=(
             (STATUS_UNPROCESSED, _('Unprocessed')),
+            (STATUS_PROCESSED, _('Processed')),
             (STATUS_OK, _('Okay')),
             (STATUS_404, _('Error 404')),
             (STATUS_ERROR, _('Error')),
@@ -344,10 +347,10 @@ class Notification(models.Model):
         _('resource_id'),
         max_length=46,
     )
-    processed = models.BooleanField(
-        _('processed'),
-        default=False,
-    )
+
+    @property
+    def processed(self):
+        return self.status == Notification.STATUS_PROCESSED
 
     last_update = models.DateTimeField(
         _('last_update'),
@@ -367,7 +370,7 @@ class Notification(models.Model):
         """
         if self.topic == Notification.TOPIC_ORDER:
             logger.info("We don't process order notifications yet")
-            self.processed = True
+            self.status = Notification.STATUS_PROCESSED
             self.save()
             return
 
@@ -385,7 +388,7 @@ class Notification(models.Model):
             else:
                 self.status = Notification.STATUS_ERROR
 
-            self.processed = True
+            self.status = Notification.STATUS_PROCESSED
             self.save()
             return
 
@@ -412,7 +415,7 @@ class Notification(models.Model):
         payment.created = raw_data['response']['collection']['date_created']
         payment.approved = raw_data['response']['collection']['date_approved']
         payment.notification = self
-        self.processed = True
+        self.status = Notification.STATUS_PROCESSED
 
         if payment.status == 'approved' and \
            payment.status_detail == 'accredited':

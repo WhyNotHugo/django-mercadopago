@@ -51,7 +51,7 @@ def create_notification(request, slug):
     )
 
     if not created:
-        notification.processed = False
+        notification.status = Notification.STATUS_PROCESSED
         notification.save()
 
     if not settings.MERCADOPAGO_ASYNC:
@@ -78,7 +78,7 @@ class PostPaymentView(View):
         )
 
         if not created:
-            notification.processed = False
+            notification.status = Notification.STATUS_UPDATES
             notification.save()
 
         if not settings.MERCADOPAGO_ASYNC:
