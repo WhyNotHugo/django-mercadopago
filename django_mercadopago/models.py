@@ -231,9 +231,14 @@ class PaymentManager(models.Manager):
 
     def create_or_update_from_raw_data(self, raw_data):
         raw_data = raw_data['collection']
-        preference = Preference.objects.get(
+
+        preference = Preference.objects.filter(
             reference=raw_data['external_reference'],
-        )
+        ).first()
+        if not preference:
+            logger.info(
+                "Got notification for a preference that's not ours. Ignoring"
+            )
 
         payment_data = dict(
             mp_id=raw_data['id'],
@@ -280,6 +285,7 @@ class Payment(models.Model):
         Preference,
         verbose_name=_('preference'),
         related_name='payments',
+        null=True,
     )
     status = models.CharField(
         _('status'),
@@ -323,6 +329,8 @@ class Notification(models.Model):
     STATUS_UNPROCESSED = 'unp'
     STATUS_PROCESSED = 'pro'
     STATUS_WITH_UPDATES = 'old'
+    STATUS_IGNORED = 'ign'
+
     STATUS_OK = 'ok'
     STATUS_404 = '404'
     STATUS_ERROR = 'err'
@@ -339,6 +347,8 @@ class Notification(models.Model):
         choices=(
             (STATUS_UNPROCESSED, _('Unprocessed')),
             (STATUS_PROCESSED, _('Processed')),
+            (STATUS_WITH_UPDATES, _('With updates')),
+            (STATUS_IGNORED, _('Ignored')),
             (STATUS_OK, _('Okay')),
             (STATUS_404, _('Error 404')),
             (STATUS_ERROR, _('Error')),
@@ -379,7 +389,7 @@ class Notification(models.Model):
         """
         if self.topic == Notification.TOPIC_ORDER:
             logger.info("We don't process order notifications yet")
-            self.status = Notification.STATUS_PROCESSED
+            self.status = Notification.STATUS_IGNORED
             self.save()
             return
 
@@ -397,48 +407,17 @@ class Notification(models.Model):
             else:
                 self.status = Notification.STATUS_ERROR
 
-            self.status = Notification.STATUS_PROCESSED
             self.save()
             return
 
-        reference = raw_data['response']['collection']['external_reference']
+        response = raw_data['response']
 
-        try:
-            preference = Preference.objects.get(reference=reference)
-        except Preference.DoesNotExist:
-            logger.info(
-                "Got notification for a preference that's not ours. Ignoring"
-            )
-            return
-
-        mp_id = raw_data['response']['collection']['id']
-        try:
-            payment = Payment.objects.get(mp_id=mp_id)
-        except Payment.DoesNotExist:
-            payment = Payment(mp_id=mp_id)
-
-        payment.preference = preference
-        payment.status = raw_data['response']['collection']['status']
-        payment.status_detail = \
-            raw_data['response']['collection']['status_detail']
-        payment.created = raw_data['response']['collection']['date_created']
-        payment.approved = raw_data['response']['collection']['date_approved']
+        payment = Payment.objects.create_or_update_from_raw_data(response)
         payment.notification = self
-        self.status = Notification.STATUS_PROCESSED
-
-        if payment.status == 'approved' and \
-           payment.status_detail == 'accredited':
-            preference.paid = True
-            preference.save()
-
         payment.save()
-        self.save()
 
-        if preference.paid:
-            signals.payment_received.send(
-                sender=self.__class__,
-                payment=payment,
-            )
+        self.status = Notification.STATUS_PROCESSED
+        self.save()
 
         return payment
 
