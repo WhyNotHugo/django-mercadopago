@@ -241,22 +241,17 @@ class PaymentManager(models.Manager):
             )
 
         payment_data = dict(
-            mp_id=raw_data['id'],
             status=raw_data['status'],
             status_detail=raw_data['status_detail'],
             created=raw_data['date_created'],
             approved=raw_data['date_approved'],
         )
 
-        payment, created = Payment.objects.get_or_create(
+        payment, created = Payment.objects.update_or_create(
             preference=preference,
+            mp_id=raw_data['id'],
             defaults=payment_data,
         )
-        if not created:
-            Payment.objects.filter(mp_id=raw_data['id']).update(
-                **payment_data
-            )
-            payment.refresh_from_db()
 
         if payment.status == 'approved' and \
            payment.status_detail == 'accredited':
