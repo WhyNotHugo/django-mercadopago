@@ -240,11 +240,16 @@ class PaymentManager(models.Manager):
                 "Got notification for a preference that's not ours. Ignoring"
             )
 
+        if 'date_approved' in raw_data:
+            approved = raw_data['date_approved']
+        else:
+            approved = None
+
         payment_data = dict(
             status=raw_data['status'],
             status_detail=raw_data['status_detail'],
             created=raw_data['date_created'],
-            approved=raw_data['date_approved'],
+            approved=approved,
         )
 
         payment, created = Payment.objects.update_or_create(
@@ -296,6 +301,7 @@ class Payment(models.Model):
     )
     approved = models.DateTimeField(
         _('approved'),
+        null=True,
     )
 
     notification = models.OneToOneField(
