@@ -140,7 +140,6 @@ class Preference(models.Model):
         related_name='preferences',
     )
 
-    # Doc says it's a UUID. It's not.
     title = models.CharField(
         _('title'),
         max_length=256,
@@ -150,6 +149,7 @@ class Preference(models.Model):
         max_digits=15,
         decimal_places=2,
     )
+    # Doc says it's a UUID. It's not.
     mp_id = models.CharField(
         _('mercadopago id'),
         max_length=46,
