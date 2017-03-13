@@ -54,7 +54,7 @@ Usage
 -----
 
 MercadoPago lets you create preferences, for which you'll later receive
-notifications (indicating if it was payed, or what happened)::
+notifications (indicating if it was paid, or what happened)::
 
     self.preference = Preference.objects.create(
         title='the product name',
