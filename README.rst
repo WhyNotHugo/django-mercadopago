@@ -29,20 +29,28 @@ Configuration
 The following settings apply to this application::
 
     # Process notifications as soon as they are received:
-    MERCADOPAGO_ASYNC = False
+    MERCADOPAGO_AUTOPROCESS = True
     # This is the hostname where your server will receive notifications:
     # Notifcation URLs will be sent with your preferences prefixing this to
     # their URLs.
     MERCADOPAGO_BASE_HOST = 'https://example.com/'
 
-NOTE: Asynchronous notification processing is still WIP.
+If ``MERCADOPAGO_AUTOPROCESS`` is ``True``, notifications will be processed as
+soon as they are received. Otherwise, it's up to the developer to process them.
+A signal is always fired when a notification has been created, and a common
+pattern if not auto-processing is to have a celery task to process them::
+
+    @receiver(notification_received)
+    def process_notification(sender, **kwargs):
+        tasks.process_notification.delay(notification=sender)
 
 You'll also want to link your MercadoPago credentials to this app - maybe just
 yours, maybe multiple accounts.
 
 Once you've obtained your application ``app id`` and ``secret key`` `here
-<https://applications.mercadopago.com/>`_, you'll want to create an ``Account``
-object with them. This can be done via the django admin included with this app.
+<https://applications.mercadopago.com/>`_, create an ``Account`` object with
+them. This can be done via the django admin included with this app or
+programmatically.
 
 You should also expose the notifications endpoints like this::
 

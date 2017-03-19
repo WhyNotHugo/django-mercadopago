@@ -55,11 +55,11 @@ def create_notification(request, slug):
         notification.status = Notification.STATUS_PROCESSED
         notification.save()
 
-    if not settings.MERCADOPAGO_ASYNC:
+    if settings.MERCADOPAGO_AUTOPROCESS:
         notification.process()
 
     signals.notification_received.send(
-        notification
+        sender=notification,
     )
 
     return HttpResponse("<h1>200 OK</h1>", status=201)
@@ -85,7 +85,7 @@ class PostPaymentView(View):
             notification.status = Notification.STATUS_WITH_UPDATES
             notification.save()
 
-        if not settings.MERCADOPAGO_ASYNC:
+        if settings.MERCADOPAGO_AUTOPROCESS:
             notification.process()
         # TODO: Else add to some queue?
 
