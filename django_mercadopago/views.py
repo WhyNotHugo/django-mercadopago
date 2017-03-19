@@ -7,6 +7,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 
+from . import signals
 from .models import Account, Notification
 
 logger = logging.getLogger(__name__)
@@ -56,7 +57,10 @@ def create_notification(request, slug):
 
     if not settings.MERCADOPAGO_ASYNC:
         notification.process()
-    # TODO: Else add to some queue?
+
+    signals.notification_received.send(
+        notification
+    )
 
     return HttpResponse("<h1>200 OK</h1>", status=201)
 
