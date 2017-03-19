@@ -12,6 +12,10 @@ from . import signals
 logger = logging.getLogger(__name__)
 
 
+class MercadoPagoServiceException(Exception):
+    pass
+
+
 class MercadoPagoService(MP):
     """
     MercadoPago service (the same one from the SDK), lazy-initialized on first
@@ -107,7 +111,7 @@ class PreferenceManager(models.Manager):
 
         if pref_result['status'] >= 300:
             logger.warning('MercadoPago returned non-200', pref_result)
-            raise Exception(
+            raise MercadoPagoServiceException(
                 'MercadoPago failed to create preference', pref_result
             )
 
