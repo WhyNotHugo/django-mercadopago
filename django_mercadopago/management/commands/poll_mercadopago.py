@@ -11,8 +11,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         for preference in Preference.objects.filter(
-                paid=False,
-            ).order_by(
-                '-pk'
-            ):
+            paid=False,
+        ).order_by(
+            '-pk'
+        ):
             preference.poll_status()
