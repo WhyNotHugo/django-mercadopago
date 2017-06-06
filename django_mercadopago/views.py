@@ -62,7 +62,7 @@ def create_notification(request, slug):
         sender=notification,
     )
 
-    return HttpResponse("<h1>200 OK</h1>", status=201)
+    return HttpResponse('<h1>200 OK</h1>', status=201)
 
 
 class PostPaymentView(View):
