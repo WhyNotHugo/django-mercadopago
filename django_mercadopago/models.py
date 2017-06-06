@@ -276,12 +276,12 @@ class PaymentManager(models.Manager):
         else:
             approved = None
 
-        payment_data = dict(
-            status=raw_data['status'],
-            status_detail=raw_data['status_detail'],
-            created=raw_data['date_created'],
-            approved=approved,
-        )
+        payment_data = {
+            'status': raw_data['status'],
+            'status_detail': raw_data['status_detail'],
+            'created': raw_data['date_created'],
+            'approved': approved,
+        }
 
         payment, created = Payment.objects.update_or_create(
             preference=preference,
