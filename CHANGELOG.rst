@@ -4,6 +4,7 @@ Changelog
 v3.0.0
 ------
 
+* Allow sending ``payer`` and ``description`` when creating preferences.
 * Replaced ``MERCADOPAGO_ASYNC`` with the opposite ``MERCADOPAGO_AUTOPROCESS``
   setting, since asynchronous processing will never be built in (only the
   necessary helpers)
