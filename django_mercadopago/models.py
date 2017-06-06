@@ -73,11 +73,35 @@ class PreferenceManager(models.Manager):
     django objects.
     """
 
-    def create(self, title, price, reference, account,
-               host=settings.MERCADOPAGO_BASE_HOST):
+    def create(
+        self,
+        title,
+        description,
+        price,
+        reference,
+        account,
+        category='services',
+        payer={},
+        host=settings.MERCADOPAGO_BASE_HOST
+    ):
         """
         Creates a new preference and registers it in MercadoPago's API.
-        """
+
+        :param str title: The title users will see in MercadoPago
+        :param price: The price for this preference.
+        :type price: float or Decimal
+        :param str reference: A reference by which we'll later search for and
+            identify this preference.
+        :param Account account: The account for which this payment is to be
+            created.
+        :param dict payer: Extra infromation about the payer. See the
+            documentation[1] for details on avaiable fields.
+        :param str host: The host to prepend to notification and return URLs.
+            This should be the host for the cannonical URL where this app is
+            served.
+
+        [1]: https://www.mercadopago.com.ar/developers/es/api-docs/basic-checkout/checkout-preferences/
+        """  # noqa
 
         notification_url = host + reverse(
             'mp:notifications', args=(account.slug,)
@@ -91,12 +115,15 @@ class PreferenceManager(models.Manager):
             'items': [
                 {
                     'title': title,
-                    'quantity': 1,
                     'currency_id': 'ARS',
+                    'description': description,
+                    'category_id': category,
+                    'quantity': 1,
                     # In case we get something like Decimal:
                     'unit_price': float(price),
                 }
             ],
+            'payer': payer,
             'external_reference': reference,
             'back_urls': {
                 'success': return_url,
