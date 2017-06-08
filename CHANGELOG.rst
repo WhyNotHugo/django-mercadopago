@@ -1,6 +1,12 @@
 Changelog
 =========
 
+v4.0.0
+------
+
+* Replaced ``payer`` with ``extra_fields``, which allow sending a lot more
+  custom data to MercadoPago when creating preferences.
+
 v3.0.0
 ------
 
