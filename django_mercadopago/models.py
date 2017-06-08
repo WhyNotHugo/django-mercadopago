@@ -81,7 +81,7 @@ class PreferenceManager(models.Manager):
         reference,
         account,
         category='services',
-        payer={},
+        extra_fields={},
         host=settings.MERCADOPAGO_BASE_HOST
     ):
         """
@@ -94,8 +94,9 @@ class PreferenceManager(models.Manager):
             identify this preference.
         :param Account account: The account for which this payment is to be
             created.
-        :param dict payer: Extra infromation about the payer. See the
-            documentation[1] for details on avaiable fields.
+        :param dict extra_fields: Extra infromation to be sent with the
+            preference creation (including payer). See the documentation[1] for
+            details on avaiable fields.
         :param str host: The host to prepend to notification and return URLs.
             This should be the host for the cannonical URL where this app is
             served.
@@ -123,7 +124,6 @@ class PreferenceManager(models.Manager):
                     'unit_price': float(price),
                 }
             ],
-            'payer': payer,
             'external_reference': reference,
             'back_urls': {
                 'success': return_url,
@@ -132,6 +132,7 @@ class PreferenceManager(models.Manager):
             },
             'notification_url': notification_url,
         }
+        preference_request.update(extra_fields)
 
         mercadopago_service = account.get_service()
         pref_result = mercadopago_service.create_preference(preference_request)
