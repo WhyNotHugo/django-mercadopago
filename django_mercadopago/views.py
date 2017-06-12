@@ -43,7 +43,7 @@ def create_notification(request, slug):
     try:
         owner = Account.objects.get(slug=slug)
     except Account.DoesNotExist:
-        return HttpResponse('Unknown account/slug', status=400)
+        return HttpResponse('Unknown account/slug', status=404)
 
     notification, created = Notification.objects.get_or_create(
         topic=topic,
@@ -58,11 +58,12 @@ def create_notification(request, slug):
     if settings.MERCADOPAGO_AUTOPROCESS:
         notification.process()
 
-    signals.notification_received.send(
-        sender=notification,
-    )
+    signals.notification_received.send(sender=notification)
 
-    return HttpResponse('<h1>200 OK</h1>', status=201)
+    if created:
+        return HttpResponse('<h1>201 Created</h1>', status=201)
+
+    return HttpResponse('<h1>200 OK</h1>', status=200)
 
 
 class PostPaymentView(View):
