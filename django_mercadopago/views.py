@@ -31,7 +31,7 @@ def create_notification(request, slug):
     )
 
     if not created:
-        notification.status = Notification.STATUS_PROCESSED
+        notification.status = Notification.STATUS_UNPROCESSED
         notification.save()
 
     if settings.MERCADOPAGO_AUTOPROCESS:

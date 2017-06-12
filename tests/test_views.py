@@ -59,12 +59,17 @@ class CreateNotificationTestCase(TestCase):
         self.assertEqual(notification.topic, models.Notification.TOPIC_PAYMENT)
         self.assertEqual(notification.resource_id, '123')
         self.assertEqual(notification.owner, self.account)
+        self.assertEqual(
+            notification.status,
+            models.Notification.STATUS_UNPROCESSED,
+        )
 
     def test_existing_notification(self):
         models.Notification.objects.create(
             topic=models.Notification.TOPIC_PAYMENT,
             resource_id=123,
             owner=self.account,
+            status=models.Notification.STATUS_PROCESSED,
         )
         self.assertEqual(models.Notification.objects.count(), 1)
 
@@ -76,3 +81,11 @@ class CreateNotificationTestCase(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(models.Notification.objects.count(), 1)
+        notification = models.Notification.objects.first()
+        self.assertEqual(notification.topic, models.Notification.TOPIC_PAYMENT)
+        self.assertEqual(notification.resource_id, '123')
+        self.assertEqual(notification.owner, self.account)
+        self.assertEqual(
+            notification.status,
+            models.Notification.STATUS_UNPROCESSED,
+        )
