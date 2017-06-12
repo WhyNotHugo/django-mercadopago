@@ -7,38 +7,17 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 
-from . import signals
+from . import forms, signals
 from .models import Account, Notification
 
 logger = logging.getLogger(__name__)
 
 
-# Maybe use a form for this? :D
-
 @csrf_exempt
 def create_notification(request, slug):
-    topic = request.GET.get('topic', None)
-    resource_id = request.GET.get('id', None)
-
-    if topic is None:
-        return HttpResponse(
-            '<h1>400 Bad Request.</h1>'
-            'Missing parameter topic',
-            status=400
-        )
-    if resource_id is None:
-        return HttpResponse(
-            '<h1>400 Bad Request.</h1>'
-            'Missing parameter id',
-            status=400
-        )
-
-    if topic == 'merchant_order':
-        topic = Notification.TOPIC_ORDER
-    elif topic == 'payment':
-        topic = Notification.TOPIC_PAYMENT
-    else:
-        return HttpResponse('invalid topic', status=400)
+    form = forms.NotificationForm(request.GET)
+    if not form.is_valid():
+        return HttpResponse(form.errors.as_json(), status=400)
 
     try:
         owner = Account.objects.get(slug=slug)
@@ -46,8 +25,8 @@ def create_notification(request, slug):
         return HttpResponse('Unknown account/slug', status=404)
 
     notification, created = Notification.objects.get_or_create(
-        topic=topic,
-        resource_id=resource_id,
+        topic=form.TOPICS[form.cleaned_data['topic']],
+        resource_id=form.cleaned_data['id'],
         owner=owner,
     )
 
