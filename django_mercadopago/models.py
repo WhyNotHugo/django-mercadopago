@@ -60,6 +60,9 @@ class Account(models.Model):
         ),
     )
 
+    def __repr__(self):
+        return '<Account {}: {}>'.format(self.id, self.name)
+
     def __str__(self):
         return self.name
 
@@ -255,6 +258,13 @@ class Preference(models.Model):
         else:
             logger.info('Polled for %s. No data', self.pk)
 
+    def __repr__(self):
+        return '<Preference {}: mp_id: {}, paid: {}>'.format(
+            self.id,
+            self.mp_id,
+            self.paid
+        )
+
     def __str__(self):
         return self.mp_id
 
@@ -344,6 +354,12 @@ class Payment(models.Model):
         blank=True,
         null=True,
     )
+
+    def __repr__(self):
+        return '<Payment {}: mp_id: {}>'.format(
+            self.id,
+            self.mp_id,
+        )
 
     def __str__(self):
         return str(self.mp_id)
@@ -453,6 +469,14 @@ class Notification(models.Model):
         self.save()
 
         return payment
+
+    def __repr__(self):
+        return '<Notification {}: {} {}, owner: {}>'.format(
+            self.id,
+            self.get_topic_display(),
+            self.resource_id,
+            self.owner_id,
+        )
 
     def __str__(self):
         return '{} {}'.format(self.get_topic_display(), self.resource_id)
