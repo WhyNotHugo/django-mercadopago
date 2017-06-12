@@ -22,6 +22,9 @@ py36:
   stage: test
   script:
     - tox -e py36
+  after_script:
+    - pip install codecov
+    - codecov
 
 flake8:
   stage: style
