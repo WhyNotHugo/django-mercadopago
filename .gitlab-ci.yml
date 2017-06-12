@@ -3,7 +3,25 @@ before_script:
   - pip install tox
 stages:
   - style
+  - test
   - deploy
+
+py34:
+  image: python:3.4
+  stage: test
+  script:
+    - tox -e py36
+
+py35:
+  image: python:3.5
+  stage: test
+  script:
+    - tox -e py36
+
+py36:
+  stage: test
+  script:
+    - tox -e py36
 
 flake8:
   stage: style

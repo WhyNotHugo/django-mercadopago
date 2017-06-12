@@ -6,3 +6,4 @@ dist/
 django_mercadopago_simple.egg-info/
 .eggs/
 .tox
+.coverage
