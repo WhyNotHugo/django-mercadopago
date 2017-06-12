@@ -1,6 +1,21 @@
 django-mercadopago-simple
 =========================
 
+.. image:: https://gitlab.com/hobarrera/django-mercadopago/badges/master/build.svg
+  :target: https://gitlab.com/hobarrera/django-mercadopago/commits/master
+  :alt: build status
+
+.. image:: https://codecov.io/gl/hobarrera/django-mercadopago/branch/master/graph/badge.svg
+  :target: https://codecov.io/gl/hobarrera/django-mercadopago
+  :alt: coverage report
+
+.. image:: https://img.shields.io/pypi/v/django-mercadopago-simple.svg
+  :target: https://pypi.python.org/pypi/django-mercadopago-simple
+  :alt: version on pypi
+
+.. image:: https://img.shields.io/pypi/l/django-mercadopago-simple.svg
+  :alt: licence
+
 **django-mercadopago-simple** is a simple django application for interacting with
 `MercadoPago <https://www.mercadopago.com.ar/>`_, aiming to be rather simple,
 and only covers the basic uses cases.
