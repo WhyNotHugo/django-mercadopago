@@ -1,7 +1,6 @@
 from django.test import Client, TestCase
 
-from django_mercadopago import models
-from tests import fixtures
+from django_mercadopago import fixtures, models
 
 
 class CreateNotificationTestCase(TestCase):
