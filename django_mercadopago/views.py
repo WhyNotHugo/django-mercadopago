@@ -17,7 +17,9 @@ logger = logging.getLogger(__name__)
 def create_notification(request, slug):
     form = forms.NotificationForm(request.GET)
     if not form.is_valid():
-        return HttpResponse(form.errors.as_json(), status=400)
+        errors = form.errors.as_json()
+        logger.warning('Received an invalid notification: %r', errors)
+        return HttpResponse(errors, status=400)
 
     try:
         owner = Account.objects.get(slug=slug)
