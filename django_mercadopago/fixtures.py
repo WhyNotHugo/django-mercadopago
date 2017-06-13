@@ -13,8 +13,8 @@ class AccountFactory(DjangoModelFactory):
 
     name = 'Test account'
     slug = 'test'
-    app_id = 'f9S92sb1cPMUbJqfpLIrw1q6'
-    secret_key = 'f9S92sb1cPMUbJqfpLIrw1q6'
+    app_id = 'zWFmI1iAcw0mwEqf'
+    secret_key = '3NjwHgyWcIDisf7MYk1UgWSTFe47DBwe'
     sandbox = True
 
 
