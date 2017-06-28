@@ -16,6 +16,9 @@ django-mercadopago-simple
 .. image:: https://img.shields.io/pypi/l/django-mercadopago-simple.svg
   :alt: licence
 
+**As of 4.2.0, this package will be renamed to django-mercadopago on PyPI.
+Please update your references.** Imports and modules remain unchanged.
+
 **django-mercadopago-simple** is a simple django application for interacting with
 `MercadoPago <https://www.mercadopago.com.ar/>`_, aiming to be rather simple,
 and only covers the basic uses cases.

@@ -4,6 +4,8 @@ Changelog
 v4.1.1
 ------
 
+* Indicate that this package is being renamed to ``django-mercadopago`` on
+  PyPI.
 * List ``factory-boy`` as an optional dependency (only if you're using test
   fixtures).
 
