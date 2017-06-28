@@ -1,6 +1,12 @@
 Changelog
 =========
 
+v4.1.1
+------
+
+* List ``factory-boy`` as an optional dependency (only if you're using test
+  fixtures).
+
 v4.1.0
 ------
 
