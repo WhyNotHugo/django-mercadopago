@@ -1,5 +1,5 @@
-django-mercadopago-simple
-=========================
+django-mercadopago
+==================
 
 .. image:: https://gitlab.com/hobarrera/django-mercadopago/badges/master/build.svg
   :target: https://gitlab.com/hobarrera/django-mercadopago/commits/master
@@ -9,17 +9,14 @@ django-mercadopago-simple
   :target: https://codecov.io/gl/hobarrera/django-mercadopago
   :alt: coverage report
 
-.. image:: https://img.shields.io/pypi/v/django-mercadopago-simple.svg
-  :target: https://pypi.python.org/pypi/django-mercadopago-simple
+.. image:: https://img.shields.io/pypi/v/django-mercadopago.svg
+  :target: https://pypi.python.org/pypi/django-mercadopago
   :alt: version on pypi
 
-.. image:: https://img.shields.io/pypi/l/django-mercadopago-simple.svg
+.. image:: https://img.shields.io/pypi/l/django-mercadopago.svg
   :alt: licence
 
-**As of 4.2.0, this package will be renamed to django-mercadopago on PyPI.
-Please update your references.** Imports and modules remain unchanged.
-
-**django-mercadopago-simple** is a simple django application for interacting with
+**django-mercadopago** is a simple django application for interacting with
 `MercadoPago <https://www.mercadopago.com.ar/>`_, aiming to be rather simple,
 and only covers the basic uses cases.
 
@@ -39,7 +36,7 @@ Installation
 
 Installation should generally be done via pip::
 
-    pip install django-mercadopago-simple
+    pip install django-mercadopago
 
 Configuration
 -------------
@@ -118,6 +115,9 @@ Finally, you can handle payment notifications in real time using a
 
 Backwards compatibility
 -----------------------
+
+Note that, prior to v4.2.0, this package was called
+``django-mercadopago-simple`` on PyPI. Older release exist under that name.
 
 Version 2.0.0 changes the database schema quite a bit. While older data is
 retained, some missing fields had to be filled. Auto-generated data will have

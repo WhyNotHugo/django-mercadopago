@@ -3,7 +3,7 @@
 from setuptools import find_packages, setup
 
 setup(
-    name='django-mercadopago-simple',
+    name='django-mercadopago',
     description='MercadoPago integration for django',
     author='Hugo Osvaldo Barrera',
     author_email='hbarrera@z47.io',
