@@ -1,6 +1,11 @@
 Changelog
 =========
 
+v4.1.0
+------
+
+* Provide fixtures for all models.
+
 v4.0.0
 ------
 
