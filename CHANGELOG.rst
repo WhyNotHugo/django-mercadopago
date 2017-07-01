@@ -1,6 +1,10 @@
 Changelog
 =========
 
+v5.0.0
+------
+* Drop compatibility with pre-4.3.0 callback URLs.
+
 v4.6.4
 ------
 * Show a currently valid access token in the Account admin.
