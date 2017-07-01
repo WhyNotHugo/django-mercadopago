@@ -1,6 +1,13 @@
 Changelog
 =========
 
+v5.0.0
+------
+
+* Merged ``STATUS_UNPROCESSED`` and ``STATUS_WITH_UPDATES`` into just
+  ``STATUS_PENDING``. The latter was not actually used as expected, and the
+  overlap was confusing and of little use.
+
 v4.3.0
 ------
 

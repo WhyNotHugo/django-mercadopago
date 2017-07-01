@@ -34,7 +34,7 @@ def _create_notification(key, topic, resource_id):
     )
 
     if not created:
-        notification.status = Notification.STATUS_UNPROCESSED
+        notification.status = Notification.STATUS_PENDING
         notification.save()
 
     if settings.MERCADOPAGO_AUTOPROCESS:

@@ -51,6 +51,6 @@ class NotificationFactory(DjangoModelFactory):
         model = models.Notification
 
     owner = SubFactory(AccountFactory)
-    status = models.Notification.STATUS_UNPROCESSED
+    status = models.Notification.STATUS_PENDING
     topic = models.Notification.TOPIC_PAYMENT
     resource_id = Sequence(lambda n: 1234 + n)

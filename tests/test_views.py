@@ -60,7 +60,7 @@ class CreateNotificationLegacyTestCase(TestCase):
         self.assertEqual(notification.owner, self.account)
         self.assertEqual(
             notification.status,
-            models.Notification.STATUS_UNPROCESSED,
+            models.Notification.STATUS_PENDING,
         )
 
     def test_existing_notification(self):
@@ -86,7 +86,7 @@ class CreateNotificationLegacyTestCase(TestCase):
         self.assertEqual(notification.owner, self.account)
         self.assertEqual(
             notification.status,
-            models.Notification.STATUS_UNPROCESSED,
+            models.Notification.STATUS_PENDING,
         )
 
 
@@ -157,7 +157,7 @@ class CreateNotificationTestCase(TestCase):
         self.assertEqual(notification.preference, self.preference)
         self.assertEqual(
             notification.status,
-            models.Notification.STATUS_UNPROCESSED,
+            models.Notification.STATUS_PENDING,
         )
 
     def test_existing_notification(self):
@@ -188,5 +188,5 @@ class CreateNotificationTestCase(TestCase):
         self.assertEqual(notification.preference, self.preference)
         self.assertEqual(
             notification.status,
-            models.Notification.STATUS_UNPROCESSED,
+            models.Notification.STATUS_PENDING,
         )

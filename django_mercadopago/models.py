@@ -375,15 +375,13 @@ class Notification(models.Model):
     TOPIC_ORDER = 'o'
     TOPIC_PAYMENT = 'p'
 
-    STATUS_UNPROCESSED = 'unp'
+    STATUS_PENDING = 'unp'
     STATUS_PROCESSED = 'pro'
-    STATUS_WITH_UPDATES = 'old'
     STATUS_IGNORED = 'ign'
 
     STATUS_OK = 'ok'
     STATUS_404 = '404'
     STATUS_ERROR = 'err'
-    # More statuses will probably appear here...
 
     owner = models.ForeignKey(
         Account,
@@ -394,15 +392,14 @@ class Notification(models.Model):
         _('status'),
         max_length=3,
         choices=(
-            (STATUS_UNPROCESSED, _('Unprocessed')),
+            (STATUS_PENDING, _('Pending')),
             (STATUS_PROCESSED, _('Processed')),
-            (STATUS_WITH_UPDATES, _('With updates')),
             (STATUS_IGNORED, _('Ignored')),
             (STATUS_OK, _('Okay')),
             (STATUS_404, _('Error 404')),
             (STATUS_ERROR, _('Error')),
         ),
-        default=STATUS_UNPROCESSED,
+        default=STATUS_PENDING,
     )
     topic = models.CharField(
         max_length=1,
