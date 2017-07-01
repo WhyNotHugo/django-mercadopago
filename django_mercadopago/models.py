@@ -108,10 +108,10 @@ class PreferenceManager(models.Manager):
         """  # noqa
 
         notification_url = host + reverse(
-            'mp:notifications', args=(account.slug,)
+            'mp:notifications', args=(reference,)
         )
         return_url = host + reverse(
-            'mp:post_payment', args=(account.slug,)
+            'mp:post_payment', args=(reference,)
         )
 
         # TODO: validate that reference is unused
@@ -414,6 +414,12 @@ class Notification(models.Model):
     resource_id = models.CharField(
         _('resource_id'),
         max_length=46,
+    )
+    preference = models.ForeignKey(
+        Preference,
+        verbose_name=_('preference'),
+        related_name='notifications',
+        null=True,
     )
 
     @property

@@ -3,7 +3,7 @@ from django.test import Client, TestCase
 from django_mercadopago import fixtures, models
 
 
-class CreateNotificationTestCase(TestCase):
+class CreateNotificationLegacyTestCase(TestCase):
 
     def setUp(self):
         self.account = fixtures.AccountFactory()
@@ -84,6 +84,108 @@ class CreateNotificationTestCase(TestCase):
         self.assertEqual(notification.topic, models.Notification.TOPIC_PAYMENT)
         self.assertEqual(notification.resource_id, '123')
         self.assertEqual(notification.owner, self.account)
+        self.assertEqual(
+            notification.status,
+            models.Notification.STATUS_UNPROCESSED,
+        )
+
+
+class CreateNotificationTestCase(TestCase):
+
+    def setUp(self):
+        self.account = fixtures.AccountFactory()
+        self.preference = fixtures.PreferenceFactory()
+
+    def test_missing_topic(self):
+        client = Client()
+        response = client.get(
+            '/notifications/{}'.format(self.preference.reference),
+            {'id': 123}
+        )
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_missing_resource_id(self):
+        client = Client()
+        response = client.get(
+            '/notifications/{}'.format(self.preference.reference),
+            {'topic': 'payment'}
+        )
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_invalid_topic(self):
+        client = Client()
+        response = client.get(
+            '/notifications/{}'.format(self.preference.reference),
+            {
+                'topic': 'blah',
+                'id': 123,
+            }
+        )
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_invalid_key(self):
+        client = Client()
+        response = client.get('/notifications/NOSUCHREF', {
+            'topic': 'payment',
+            'id': 123,
+        })
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_new_notification(self):
+        self.assertEqual(models.Notification.objects.count(), 0)
+
+        client = Client()
+        response = client.get(
+            '/notifications/{}'.format(self.preference.reference),
+            {
+                'topic': 'payment',
+                'id': 123,
+            }
+        )
+
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(models.Notification.objects.count(), 1)
+
+        notification = models.Notification.objects.first()
+        self.assertEqual(notification.topic, models.Notification.TOPIC_PAYMENT)
+        self.assertEqual(notification.resource_id, '123')
+        self.assertEqual(notification.owner, self.account)
+        self.assertEqual(notification.preference, self.preference)
+        self.assertEqual(
+            notification.status,
+            models.Notification.STATUS_UNPROCESSED,
+        )
+
+    def test_existing_notification(self):
+        models.Notification.objects.create(
+            topic=models.Notification.TOPIC_PAYMENT,
+            resource_id=123,
+            owner=self.account,
+            status=models.Notification.STATUS_PROCESSED,
+            preference=self.preference,
+        )
+        self.assertEqual(models.Notification.objects.count(), 1)
+
+        client = Client()
+        response = client.get(
+            '/notifications/{}'.format(self.preference.reference),
+            {
+                'topic': 'payment',
+                'id': 123,
+            }
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(models.Notification.objects.count(), 1)
+        notification = models.Notification.objects.first()
+        self.assertEqual(notification.topic, models.Notification.TOPIC_PAYMENT)
+        self.assertEqual(notification.resource_id, '123')
+        self.assertEqual(notification.owner, self.account)
+        self.assertEqual(notification.preference, self.preference)
         self.assertEqual(
             notification.status,
             models.Notification.STATUS_UNPROCESSED,

@@ -2,26 +2,35 @@ import logging
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404
+from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 
 from . import forms, signals
-from .models import Account, Notification
+from .models import Account, Notification, Preference
 
 logger = logging.getLogger(__name__)
 
 
-def _create_notification(slug, topic, resource_id):
-    qs = Account.objects.filter(slug=slug)
-    account = get_object_or_404(qs)
+def _create_notification(key, topic, resource_id):
+    try:
+        account = Account.objects.get(slug=key)
+    except Account.DoesNotExist:
+        try:
+            preference = Preference.objects.get(reference=key)
+        except Preference.DoesNotExist:
+            raise Http404('Invalid slug or reference.')
+        else:
+            account = preference.owner
+    else:
+        preference = None
 
     notification, created = Notification.objects.get_or_create(
         topic=topic,
         resource_id=resource_id,
         owner=account,
+        preference=preference,
     )
 
     if not created:
@@ -44,7 +53,7 @@ class CSRFExemptMixin:
 
 class NotificationView(CSRFExemptMixin, View):
 
-    def get(self, request, slug):
+    def get(self, request, key):
         form = forms.NotificationForm(request.GET)
         if not form.is_valid():
             errors = form.errors.as_json()
@@ -52,7 +61,7 @@ class NotificationView(CSRFExemptMixin, View):
             return HttpResponse(errors, status=400)
 
         notification, created = _create_notification(
-            slug,
+            key,
             topic=form.TOPICS[form.cleaned_data['topic']],
             resource_id=form.cleaned_data['id'],
         )
@@ -65,9 +74,9 @@ class NotificationView(CSRFExemptMixin, View):
 
 class PostPaymentView(CSRFExemptMixin, View):
 
-    def get(self, request, slug):
+    def get(self, request, key):
         notification, created = _create_notification(
-            slug,
+            key,
             topic=Notification.TOPIC_PAYMENT,
             resource_id=request.GET.get('collection_id'),
         )

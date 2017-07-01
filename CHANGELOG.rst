@@ -1,6 +1,16 @@
 Changelog
 =========
 
+v4.3.0
+------
+
+* Notification and callback URLs are now unique per-preference, making it
+  even clearer to identify them by URL. This version keeps backwards
+  compatibility with old URLs (for yet-to-be-paid preferences with old-style
+  URLs).
+* Notifications now have a direct relationship to the preference they belong
+  to.
+
 v4.2.0
 ------
 
