@@ -1,6 +1,11 @@
 Changelog
 =========
 
+v4.2.0
+------
+
+* Rename package to ``django-mercadopago``.
+
 v4.1.1
 ------
 
