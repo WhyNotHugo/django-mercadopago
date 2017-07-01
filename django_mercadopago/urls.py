@@ -5,7 +5,7 @@ from . import views
 urlpatterns = [
     url(
         r'^notifications/(?P<slug>.*)$',
-        views.create_notification,
+        views.NotificationView.as_view(),
         name='notifications'
     ),
     url(
