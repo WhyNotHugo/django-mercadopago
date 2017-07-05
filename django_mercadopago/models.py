@@ -66,7 +66,8 @@ class Account(models.Model):
     def __str__(self):
         return self.name
 
-    def get_service(self):
+    @property
+    def service(self):
         return MercadoPagoService(self)
 
 
@@ -137,7 +138,7 @@ class PreferenceManager(models.Manager):
         }
         preference_request.update(extra_fields)
 
-        mercadopago_service = account.get_service()
+        mercadopago_service = account.service
         pref_result = mercadopago_service.create_preference(preference_request)
 
         if pref_result['status'] >= 300:
@@ -226,7 +227,7 @@ class Preference(models.Model):
         if title:
             self.title = title
 
-        service = self.owner.get_service()
+        service = self.owner.service
         service.update_preference(
             self.mp_id,
             {
@@ -246,7 +247,7 @@ class Preference(models.Model):
         """
         Manually poll for the status of this preference
         """
-        service = self.owner.get_service()
+        service = self.owner.service
         response = service.search_payment({
             'external_reference': self.reference
         })
@@ -445,7 +446,7 @@ class Notification(models.Model):
             self.save()
             return
 
-        mercadopago_service = self.owner.get_service()
+        mercadopago_service = self.owner.service
         raw_data = mercadopago_service.get_payment_info(self.resource_id)
 
         if raw_data['status'] != 200:
