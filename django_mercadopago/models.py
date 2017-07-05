@@ -330,7 +330,6 @@ class Payment(models.Model):
         Preference,
         verbose_name=_('preference'),
         related_name='payments',
-        null=True,
     )
     status = models.CharField(
         _('status'),
