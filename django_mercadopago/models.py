@@ -117,6 +117,7 @@ class PreferenceManager(models.Manager):
 
         # TODO: validate that reference is unused
         preference_request = {
+            'auto_return': 'all',
             'items': [
                 {
                     'title': title,
