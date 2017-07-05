@@ -1,4 +1,5 @@
-from django.contrib import admin
+from django.contrib import admin, messages
+from django.utils.translation import ugettext as _
 
 from . import models
 
@@ -19,6 +20,21 @@ class PreferenceAdmin(admin.ModelAdmin):
     list_display = (
         'mp_id',
         'reference',
+        'paid',
+    )
+
+    def poll_status(self, request, queryset):
+        payments = [payment.poll_status() for payment in queryset]
+        payments_count = sum(payment is not None for payment in payments)
+        messages.add_message(
+            request,
+            messages.SUCCESS,
+            _('%d payments created.') % payments_count
+        )
+    poll_status.short_description = _('poll status')
+
+    actions = (
+        poll_status,
     )
 
 
