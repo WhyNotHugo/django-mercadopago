@@ -1,12 +1,19 @@
 Changelog
 =========
 
-v5.0.0
+v4.5.0
+------
+* Added a missing migration for recent notification changes.
+
+v4.4.0
 ------
 
 * Merged ``STATUS_UNPROCESSED`` and ``STATUS_WITH_UPDATES`` into just
   ``STATUS_PENDING``. The latter was not actually used as expected, and the
   overlap was confusing and of little use.
+* Allow polling Preference statuses via the admin.
+* Fix crashes when dealing with unknown preferences.
+* Improved logging for received notifications.
 
 v4.3.0
 ------
