@@ -57,7 +57,11 @@ class NotificationView(CSRFExemptMixin, View):
         form = forms.NotificationForm(request.GET)
         if not form.is_valid():
             errors = form.errors.as_json()
-            logger.warning('Received an invalid notification: %r', errors)
+            logger.warning(
+                'Received an invalid notification: %r, %r',
+                request.GET,
+                errors,
+            )
             return HttpResponse(errors, status=400)
 
         notification, created = _create_notification(
@@ -75,6 +79,7 @@ class NotificationView(CSRFExemptMixin, View):
 class PostPaymentView(CSRFExemptMixin, View):
 
     def get(self, request, key):
+        logger.info('Reached post-payment view with data: %r', request.GET)
         notification, created = _create_notification(
             key,
             topic=Notification.TOPIC_PAYMENT,
