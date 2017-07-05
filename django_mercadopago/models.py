@@ -279,9 +279,10 @@ class PaymentManager(models.Manager):
             reference=raw_data['external_reference'],
         ).first()
         if not preference:
-            logger.info(
-                "Got notification for a preference that's not ours. Ignoring"
+            logger.warning(
+                "Got notification for a preference that's not ours."
             )
+            return
 
         if 'date_approved' in raw_data:
             approved = raw_data['date_approved']
@@ -466,8 +467,9 @@ class Notification(models.Model):
         response = raw_data['response']
 
         payment = Payment.objects.create_or_update_from_raw_data(response)
-        payment.notification = self
-        payment.save()
+        if payment:
+            payment.notification = self
+            payment.save()
 
         self.status = Notification.STATUS_PROCESSED
         self.save()
