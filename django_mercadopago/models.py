@@ -260,6 +260,9 @@ class Preference(models.Model):
         else:
             logger.info('Polled for %s. No data', self.pk)
 
+    def get_absolute_url(self):
+        return self.url
+
     def __repr__(self):
         return '<Preference {}: mp_id: {}, paid: {}>'.format(
             self.id,
