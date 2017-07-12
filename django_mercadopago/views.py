@@ -75,6 +75,9 @@ class NotificationView(CSRFExemptMixin, View):
 
         return HttpResponse('<h1>200 OK</h1>', status=200)
 
+    def post(self, request, key):
+        return self.get(request, key)
+
 
 class PostPaymentView(CSRFExemptMixin, View):
 
