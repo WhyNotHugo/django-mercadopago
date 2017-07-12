@@ -4,6 +4,8 @@ Changelog
 v4.5.0
 ------
 * Added a missing migration for recent notification changes.
+* Notifications are now processed either if received via GET or POST.
+  Formerly, only GET was used, but this seems to be changing recently.
 
 v4.4.0
 ------
