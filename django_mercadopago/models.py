@@ -1,9 +1,9 @@
 import logging
 
 from django.conf import settings
-from django.core.urlresolvers import reverse
 from django.db import models
 from django.db import transaction
+from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from mercadopago import MP
 
@@ -175,6 +175,7 @@ class Preference(models.Model):
         Account,
         verbose_name=_('owner'),
         related_name='preferences',
+        on_delete=models.PROTECT,
     )
 
     title = models.CharField(
@@ -333,6 +334,7 @@ class Payment(models.Model):
         Preference,
         verbose_name=_('preference'),
         related_name='payments',
+        on_delete=models.PROTECT,
     )
     status = models.CharField(
         _('status'),
@@ -358,6 +360,7 @@ class Payment(models.Model):
         help_text=_('The notification that informed us of this payment.'),
         blank=True,
         null=True,
+        on_delete=models.PROTECT,
     )
 
     def __repr__(self):
@@ -392,6 +395,7 @@ class Notification(models.Model):
         Account,
         verbose_name=_('owner'),
         related_name='notifications',
+        on_delete=models.PROTECT,
     )
     status = models.CharField(
         _('status'),
@@ -422,6 +426,7 @@ class Notification(models.Model):
         verbose_name=_('preference'),
         related_name='notifications',
         null=True,
+        on_delete=models.PROTECT,
     )
 
     @property
