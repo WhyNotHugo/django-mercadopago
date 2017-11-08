@@ -1,6 +1,11 @@
 Changelog
 =========
 
+v4.6.2
+------
+* Fix notifications view crashing when receiving a POST for a merchant order
+  (it seems these notifications are messed up and have rubbish).
+
 v4.6.1
 ------
 * Fix parsing of notifications received via POST, which seem to have a

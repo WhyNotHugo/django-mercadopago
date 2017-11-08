@@ -85,10 +85,11 @@ class NotificationView(CSRFExemptMixin, View):
         # The format of notifications when getting a POST differs from the
         # format when getting a GET, so map these:
         data = json.loads(request.body)
+        logger.info('Got POST notification: %s', data)
         form = forms.NotificationForm(
             {
-                'topic': data['type'],
-                'id': data['data']['id'],
+                'topic': data.get('type'),
+                'id': data.get('data', {}).get('id'),
             }
         )
         return self.process(request, key, form)
