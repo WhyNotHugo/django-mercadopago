@@ -1,3 +1,4 @@
+import json
 import logging
 
 from django.conf import settings
@@ -52,9 +53,7 @@ class CSRFExemptMixin:
 
 
 class NotificationView(CSRFExemptMixin, View):
-
-    def get(self, request, key):
-        form = forms.NotificationForm(request.GET)
+    def process(self, request, key, form):
         if not form.is_valid():
             errors = form.errors.as_json()
             logger.warning(
@@ -75,8 +74,21 @@ class NotificationView(CSRFExemptMixin, View):
 
         return HttpResponse('<h1>200 OK</h1>', status=200)
 
+    def get(self, request, key):
+        form = forms.NotificationForm(request.GET)
+        return self.process(request, key, form)
+
     def post(self, request, key):
-        return self.get(request, key)
+        # The format of notifications when getting a POST differs from the
+        # format when getting a GET, so map these:
+        data = json.loads(request.body)
+        form = forms.NotificationForm(
+            {
+                'topic': data['type'],
+                'id': data['data']['id'],
+            }
+        )
+        return self.process(request, key, form)
 
 
 class PostPaymentView(CSRFExemptMixin, View):

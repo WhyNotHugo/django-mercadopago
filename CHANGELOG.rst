@@ -1,6 +1,11 @@
 Changelog
 =========
 
+v4.6.1
+------
+* Fix parsing of notifications received via POST, which seem to have a
+  different format to those which are received via GET.
+
 v4.5.0
 ------
 * Added a missing migration for recent notification changes.
