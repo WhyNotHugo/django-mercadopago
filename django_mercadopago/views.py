@@ -27,16 +27,15 @@ def _create_notification(key, topic, resource_id):
     else:
         preference = None
 
-    notification, created = Notification.objects.get_or_create(
+    notification, created = Notification.objects.update_or_create(
         topic=topic,
         resource_id=resource_id,
         owner=account,
         preference=preference,
+        defaults={
+            'status': Notification.STATUS_PENDING,
+        },
     )
-
-    if not created:
-        notification.status = Notification.STATUS_PENDING
-        notification.save()
 
     if settings.MERCADOPAGO_AUTOPROCESS:
         notification.process()
