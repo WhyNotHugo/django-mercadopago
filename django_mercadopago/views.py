@@ -60,7 +60,11 @@ class NotificationView(CSRFExemptMixin, View):
                 request.GET,
                 errors,
             )
-            return HttpResponse(errors, status=400)
+            return HttpResponse(
+                errors,
+                status=400,
+                content_type='application/json',
+            )
 
         notification, created = _create_notification(
             key,
