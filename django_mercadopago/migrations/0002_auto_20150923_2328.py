@@ -54,13 +54,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='payment',
             name='notification',
-            field=models.OneToOneField(related_name='payment', null=True, to='mp.Notification', help_text='La notificación que nos informó de este pago.', verbose_name='notificación'),
+            field=models.OneToOneField(related_name='payment', null=True, to='mp.Notification', help_text='La notificación que nos informó de este pago.', verbose_name='notificación', on_delete=models.CASCADE),
             preserve_default=False,
         ),
         migrations.AddField(
             model_name='notification',
             name='owner',
-            field=models.ForeignKey(related_name='notifications', to='mp.Account', null=True, verbose_name='dueño'),
+            field=models.ForeignKey(related_name='notifications', to='mp.Account', null=True, verbose_name='dueño', on_delete=models.CASCADE),
             preserve_default=False,
         ),
         migrations.RunPython(fake_data),
@@ -72,7 +72,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='payment',
             name='notification',
-            field=models.OneToOneField(related_name='payment', default=None, to='mp.Notification', help_text='La notificación que nos informó de este pago.', verbose_name='notificación'),
+            field=models.OneToOneField(related_name='payment', default=None, to='mp.Notification', help_text='La notificación que nos informó de este pago.', verbose_name='notificación', on_delete=models.CASCADE),
             preserve_default=False,
         ),
         migrations.AlterField(
@@ -108,7 +108,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='payment',
             name='preference',
-            field=models.ForeignKey(related_name='payments', to='mp.Preference', verbose_name='preferencia'),
+            field=models.ForeignKey(related_name='payments', to='mp.Preference', verbose_name='preferencia', on_delete=models.CASCADE),
         ),
         migrations.AlterField(
             model_name='payment',
@@ -138,7 +138,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='notification',
             name='owner',
-            field=models.ForeignKey(related_name='notifications', to='mp.Account', default=None, verbose_name='dueño'),
+            field=models.ForeignKey(related_name='notifications', to='mp.Account', default=None, verbose_name='dueño', on_delete=models.CASCADE),
             preserve_default=False,
         ),
     ]

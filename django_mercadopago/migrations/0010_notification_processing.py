@@ -23,6 +23,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='payment',
             name='preference',
-            field=models.ForeignKey(to='mp.Preference', related_name='payments', verbose_name='preferencia', null=True),
+            field=models.ForeignKey(to='mp.Preference', related_name='payments', verbose_name='preferencia', null=True, on_delete=models.CASCADE),
         ),
     ]

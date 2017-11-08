@@ -44,7 +44,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='payment',
             name='preference',
-            field=models.ForeignKey(related_name='payments', to='mp.Preference'),
+            field=models.ForeignKey(related_name='payments', to='mp.Preference', on_delete=models.CASCADE),
         ),
         migrations.AlterUniqueTogether(
             name='notification',

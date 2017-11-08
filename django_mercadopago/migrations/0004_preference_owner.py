@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='preference',
             name='owner',
-            field=models.ForeignKey(to='mp.Account', verbose_name='dueño', related_name='preferences', default=1),
+            field=models.ForeignKey(to='mp.Account', verbose_name='dueño', related_name='preferences', default=1, on_delete=models.CASCADE),
             preserve_default=False,
         ),
     ]

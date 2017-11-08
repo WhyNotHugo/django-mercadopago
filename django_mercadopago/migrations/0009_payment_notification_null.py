@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='payment',
             name='notification',
-            field=models.OneToOneField(null=True, blank=True, related_name='payment', verbose_name='notificación', help_text='La notificación que nos informó de este pago.', to='mp.Notification'),
+            field=models.OneToOneField(null=True, blank=True, related_name='payment', verbose_name='notificación', help_text='La notificación que nos informó de este pago.', to='mp.Notification', on_delete=models.CASCADE),
         ),
     ]
