@@ -3,10 +3,10 @@ import logging
 
 from django.conf import settings
 from django.http import (
-    JsonResponse,
     Http404,
     HttpResponse,
     HttpResponseRedirect,
+    JsonResponse,
 )
 from django.urls import reverse
 from django.utils.decorators import method_decorator
