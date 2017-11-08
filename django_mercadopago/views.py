@@ -2,7 +2,12 @@ import json
 import logging
 
 from django.conf import settings
-from django.http import Http404, HttpResponse, HttpResponseRedirect
+from django.http import (
+    JsonResponse,
+    Http404,
+    HttpResponse,
+    HttpResponseRedirect,
+)
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
@@ -72,10 +77,10 @@ class NotificationView(CSRFExemptMixin, View):
             resource_id=form.cleaned_data['id'],
         )
 
-        if created:
-            return HttpResponse('<h1>201 Created</h1>', status=201)
-
-        return HttpResponse('<h1>200 OK</h1>', status=200)
+        return JsonResponse(
+            {'created': created},
+            status=201 if created else 200,
+        )
 
     def get(self, request, key):
         form = forms.NotificationForm(request.GET)

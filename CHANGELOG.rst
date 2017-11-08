@@ -5,6 +5,8 @@ v4.6.2
 ------
 * Fix notifications view crashing when receiving a POST for a merchant order
   (it seems these notifications are messed up and have rubbish).
+* Notifications endpoints now return JSON (which should make testing apps
+  slightly more pleasant).
 
 v4.6.1
 ------
