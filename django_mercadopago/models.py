@@ -85,7 +85,7 @@ class PreferenceManager(models.Manager):
         reference,
         account,
         category='services',
-        extra_fields={},
+        extra_fields=None,
         host=settings.MERCADOPAGO_BASE_HOST
     ):
         """
@@ -107,6 +107,7 @@ class PreferenceManager(models.Manager):
 
         [1]: https://www.mercadopago.com.ar/developers/es/api-docs/basic-checkout/checkout-preferences/
         """  # noqa
+        extra_fields = extra_fields or {}
 
         notification_url = host + reverse(
             'mp:notifications', args=(reference,)
