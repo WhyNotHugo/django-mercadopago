@@ -38,4 +38,4 @@ pypi:
     - python setup.py sdist bdist_wheel
     - twine upload --config-file .pypirc -u $PYPI_USER -p $PYPI_PASSWORD dist/*
   only:
-    - tags@hobarrera/django-mercadopago
+    - tags
