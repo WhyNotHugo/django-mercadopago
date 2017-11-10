@@ -64,6 +64,7 @@ class NotificationView(CSRFExemptMixin, View):
                 'Received an invalid notification: %r, %r',
                 request.GET,
                 errors,
+                extra={'stack': True},
             )
             return HttpResponse(
                 errors,
