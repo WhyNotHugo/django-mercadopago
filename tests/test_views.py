@@ -190,3 +190,5 @@ class CreateNotificationTestCase(TestCase):
             notification.status,
             models.Notification.STATUS_PENDING,
         )
+
+    # XXX: Add tests for POST notifications

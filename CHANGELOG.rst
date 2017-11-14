@@ -1,6 +1,11 @@
 Changelog
 =========
 
+v4.6.3
+------
+* Support yet another notification format (apparently only used for merchant
+  orders though).
+
 v4.6.2
 ------
 * Fix notifications view crashing when receiving a POST for a merchant order
