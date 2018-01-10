@@ -13,6 +13,19 @@ class AccountAdmin(admin.ModelAdmin):
     prepopulated_fields = {
         'slug': ('name',),
     }
+    readonly_fields = (
+        'access_token',
+    )
+
+    def access_token(self, obj):
+        if obj.app_id and obj.secret_key:
+            try:
+                return obj.service.get_access_token()
+            except Exception:
+                pass
+
+        return '-'
+    access_token.short_description = _('access token')
 
 
 @admin.register(models.Preference)

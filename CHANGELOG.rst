@@ -1,6 +1,10 @@
 Changelog
 =========
 
+v4.6.4
+------
+* Show a currently valid access token in the Account admin.
+
 v4.6.3
 ------
 * Support yet another notification format (apparently only used for merchant
