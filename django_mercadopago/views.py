@@ -5,10 +5,9 @@ from django.conf import settings
 from django.http import (
     Http404,
     HttpResponse,
-    HttpResponseRedirect,
     JsonResponse,
 )
-from django.urls import reverse
+from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
@@ -35,7 +34,7 @@ def _create_notification(reference, topic, resource_id):
         },
     )
 
-    if settings.MERCADOPAGO_AUTOPROCESS:
+    if settings.MERCADOPAGO['autoprocess']:
         notification.process()
     signals.notification_received.send(sender=notification)
 
@@ -98,17 +97,38 @@ class NotificationView(CSRFExemptMixin, View):
         return self.process(request, reference, form)
 
 
-class PostPaymentView(CSRFExemptMixin, View):
-
+class PaymentSuccessView(CSRFExemptMixin, View):
     def get(self, request, reference):
-        logger.info('Reached post-payment view with data: %r', request.GET)
+        logger.info('Reached payment success view with data: %r', request.GET)
         notification, created = _create_notification(
             reference,
             topic=Notification.TOPIC_PAYMENT,
             resource_id=request.GET.get('collection_id'),
         )
 
-        return HttpResponseRedirect(reverse(
-            settings.MERCADOPAGO_POST_PAYMENT_VIEW,
+        return redirect(
+            settings.MERCADOPAGO['success_url'],
             args=(notification.pk,),
-        ))
+        )
+
+
+class PaymentFailedView(CSRFExemptMixin, View):
+    def get(self, request, reference):
+        logger.info('Reached payment failure view with data: %r', request.GET)
+        preference = Preference.objects.get(reference=reference)
+
+        return redirect(
+            settings.MERCADOPAGO['failure_url'],
+            args=(preference.pk,),
+        )
+
+
+class PaymentPendingView(CSRFExemptMixin, View):
+    def get(self, request, reference):
+        logger.info('Reached payment pending view with data: %r', request.GET)
+        preference = Preference.objects.get(reference=reference)
+
+        return redirect(
+            settings.MERCADOPAGO['pending_url'],
+            args=(preference.pk,),
+        )

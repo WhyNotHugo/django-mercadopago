@@ -86,7 +86,7 @@ class PreferenceManager(models.Manager):
         account,
         category='services',
         extra_fields=None,
-        host=settings.MERCADOPAGO_BASE_HOST
+        host=settings.MERCADOPAGO['base_host'],
     ):
         """
         Creates a new preference and registers it in MercadoPago's API.
@@ -112,9 +112,9 @@ class PreferenceManager(models.Manager):
         notification_url = host + reverse(
             'mp:notifications', args=(reference,)
         )
-        return_url = host + reverse(
-            'mp:post_payment', args=(reference,)
-        )
+        success_url = host + reverse('mp:payment_success', args=(reference,))
+        failure_url = host + reverse('mp:payment_failure', args=(reference,))
+        pending_url = host + reverse('mp:payment_pending', args=(reference,))
 
         # TODO: validate that reference is unused
         preference_request = {
@@ -132,9 +132,9 @@ class PreferenceManager(models.Manager):
             ],
             'external_reference': reference,
             'back_urls': {
-                'success': return_url,
-                'pending': return_url,
-                'failure': return_url,
+                'success': success_url,
+                'pending': pending_url,
+                'failure': failure_url,
             },
             'notification_url': notification_url,
         }

@@ -10,7 +10,17 @@ urlpatterns = [
     ),
     url(
         r'^post_payment/(?P<reference>.*)$',
-        views.PostPaymentView.as_view(),
-        name='post_payment',
+        views.PaymentSuccessView.as_view(),
+        name='payment_success',
+    ),
+    url(
+        r'^payment_failed/(?P<reference>.*)$',
+        views.PaymentFailedView.as_view(),
+        name='payment_failure',
+    ),
+    url(
+        r'^payment_pending/(?P<reference>.*)$',
+        views.PaymentPendingView.as_view(),
+        name='payment_pending',
     ),
 ]

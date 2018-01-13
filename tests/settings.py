@@ -19,5 +19,10 @@ DATABASES = {
 }
 ROOT_URLCONF = 'django_mercadopago.urls'
 
-MERCADOPAGO_BASE_HOST = 'http://localhost:8001'
-MERCADOPAGO_AUTOPROCESS = False
+MERCADOPAGO = {
+    'autoprocess': False,
+    'base_host': 'http://localhost:8001',
+    'success_url': 'mp_success',  # Inexistant
+    'failure_url': 'mp_failure',  # Inexistant
+    'pending_url': 'mp_pending',  # Inexistant
+}

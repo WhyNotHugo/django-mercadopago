@@ -1,10 +1,11 @@
-from django.test import Client, TestCase
+from unittest.mock import patch
 
-from django_mercadopago import fixtures, models
+from django.test import Client, RequestFactory, TestCase
+
+from django_mercadopago import fixtures, models, views
 
 
 class CreateNotificationTestCase(TestCase):
-
     def setUp(self):
         self.account = fixtures.AccountFactory()
         self.preference = fixtures.PreferenceFactory()
@@ -105,3 +106,73 @@ class CreateNotificationTestCase(TestCase):
         )
 
     # XXX: Add tests for POST notifications
+
+
+class PaymentSuccessViewTestCase(TestCase):
+    def setUp(self):
+        self.preference = fixtures.PreferenceFactory()
+
+    def test_redirect_to_view(self):
+        view = views.PaymentSuccessView()
+        view.request = RequestFactory().get('/mp/success')
+        view.request.GET = {'collection_id': 134783145}
+
+        with patch(
+            'django_mercadopago.views.redirect',
+            spec=True,
+        ) as mocked_redirect:
+            result = view.get(view.request, self.preference.reference)
+
+        self.assertEqual(
+            result,
+            mocked_redirect(
+                'mp_success',
+                args=models.Notification.objects.last(),
+            )
+        )
+
+
+class PaymentFailureViewTestCase(TestCase):
+    def setUp(self):
+        self.preference = fixtures.PreferenceFactory()
+
+    def test_redirect_to_view(self):
+        view = views.PaymentFailedView()
+        view.request = RequestFactory().get('/mp/failure')
+
+        with patch(
+            'django_mercadopago.views.redirect',
+            spec=True,
+        ) as mocked_redirect:
+            result = view.get(view.request, self.preference.reference)
+
+        self.assertEqual(
+            result,
+            mocked_redirect(
+                'mp_failure',
+                args=self.preference.pk,
+            )
+        )
+
+
+class PaymentPendingViewTestCase(TestCase):
+    def setUp(self):
+        self.preference = fixtures.PreferenceFactory()
+
+    def test_redirect_to_view(self):
+        view = views.PaymentPendingView()
+        view.request = RequestFactory().get('/mp/pending')
+
+        with patch(
+            'django_mercadopago.views.redirect',
+            spec=True,
+        ) as mocked_redirect:
+            result = view.get(view.request, self.preference.reference)
+
+        self.assertEqual(
+            result,
+            mocked_redirect(
+                'mp_pending',
+                args=self.preference.pk,
+            )
+        )

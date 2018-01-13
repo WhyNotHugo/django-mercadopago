@@ -55,15 +55,26 @@ You should also expose the notifications endpoints like this::
 Note that these endpoints are **required**, since notification callbacks won't
 work without them.
 
-There are also a few Django settings that configure the behaviour of this app:
+There are also a few Django settings that configure the behaviour of this app.
+All these settings are included in a single ``dict`` inside your Django
+settings::
 
-MERCADOPAGO_AUTOPROCESS
+    MERCADOPAGO = {
+        'autoprocess': True,
+        'success_url': 'myapp:mp_success',
+        'failure_url': 'myapp:mp_failure',
+        'pending_url': 'myapp:mp_pending',
+        'base_host': 'https://www.mysite.com
+    }
+
+AUTOPROCESS
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 **Required**
 
-If ``MERCADOPAGO_AUTOPROCESS`` is ``True``, notifications will be processed as
-soon as they are received. Otherwise, it's up to the developer to process them.
+If set to ``True``, notifications will be processed as soon as they are
+received. Otherwise, it's up to the developer to process them.
+
 A signal is always fired when a notification has been created, and a common
 pattern if not auto-processing is to have a celery task to process them::
 
@@ -71,22 +82,52 @@ pattern if not auto-processing is to have a celery task to process them::
     def process_notification(sender, **kwargs):
         tasks.process_notification.delay(notification=sender)
 
-MERCADOPAGO_POST_PAYMENT_VIEW
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SUCCESS_VIEW
+~~~~~~~~~~~~
 
 **Required**
 
-The setting ``MERCADOPAGO_POST_PAYMENT_VIEW`` must define name of the view
-where users are redirected after a payment.  This view will receive as an
-argument the ``id`` of the notification created for this payment.
+The named URL pattern where requests are redirected after a user successfully
+completes a payment. This url will receive as an argument the ``id`` of the
+notification created for this payment.
 
-MERCADOPAGO_BASE_HOST
-~~~~~~~~~~~~~~~~~~~~~
+For example, this if this value were set to ``payment_recived``, a
+corresponding URL pattern would look like this::
+
+    url(
+        r'pago_recibido/(?P<pk>.*)$',
+        order.OrderPaidView.as_view(),
+        name='payment_received',
+    ),
+
+FAILURE_VIEW
+~~~~~~~~~~~~
 
 **Required**
 
-``MERCADOPAGO_BASE_HOST`` defines the domain name to use for notification URLs.
-It'll be prepended to the exact URL of the exposed notifications endpoint.
+The named URL pattern where requests are redirected after a user payment fails.
+This url will receive as an argument the ``id`` of the preference that the user
+attempted to pay
+
+
+PENDING_VIEW
+~~~~~~~~~~~~
+
+**Required**
+
+The named URL pattern where requests are redirected after a user completes a
+payment, but confirmation is pending (for example, a transaction that takes a
+few days, bank deposit, etc).
+This url will receive as an argument the ``id`` of the preference that the user
+is attempting to pay.
+
+BASE_HOST
+~~~~~~~~~
+
+**Required**
+
+Defines the domain name to use for notification and callback URLs.  It'll be
+prepended to the exact URL of the exposed notifications endpoint.
 
 Usage
 -----
