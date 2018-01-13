@@ -1,6 +1,16 @@
 Changelog
 =========
 
+v5.0.0
+------
+* Drop compatibility with pre-4.3.0 callback URLs.
+* There are now separate endpoints for successful/failed/pending payments. Each
+  one will then redirect to a separate URL, which must now be defined in the
+  configuration (see README for details).
+* Settings are now contained in a single ``dict``, which should keep your
+  Django settings file tidier.  Its entries can also be modified at runtime, if
+  needed.
+
 v4.6.4
 ------
 * Show a currently valid access token in the Account admin.
