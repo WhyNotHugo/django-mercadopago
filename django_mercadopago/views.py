@@ -108,7 +108,7 @@ class PaymentSuccessView(CSRFExemptMixin, View):
 
         return redirect(
             settings.MERCADOPAGO['success_url'],
-            args=(notification.pk,),
+            pk=notification.pk,
         )
 
 
@@ -119,7 +119,7 @@ class PaymentFailedView(CSRFExemptMixin, View):
 
         return redirect(
             settings.MERCADOPAGO['failure_url'],
-            args=(preference.pk,),
+            pk=preference.pk,
         )
 
 
@@ -130,5 +130,5 @@ class PaymentPendingView(CSRFExemptMixin, View):
 
         return redirect(
             settings.MERCADOPAGO['pending_url'],
-            args=(preference.pk,),
+            pk=preference.pk,
         )

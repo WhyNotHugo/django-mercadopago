@@ -127,7 +127,7 @@ class PaymentSuccessViewTestCase(TestCase):
             result,
             mocked_redirect(
                 'mp_success',
-                args=models.Notification.objects.last(),
+                pk=models.Notification.objects.last(),
             )
         )
 
@@ -150,7 +150,7 @@ class PaymentFailureViewTestCase(TestCase):
             result,
             mocked_redirect(
                 'mp_failure',
-                args=self.preference.pk,
+                pk=self.preference.pk,
             )
         )
 
@@ -173,6 +173,6 @@ class PaymentPendingViewTestCase(TestCase):
             result,
             mocked_redirect(
                 'mp_pending',
-                args=self.preference.pk,
+                pk=self.preference.pk,
             )
         )
