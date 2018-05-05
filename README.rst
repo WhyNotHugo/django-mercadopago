@@ -67,8 +67,10 @@ settings::
         'base_host': 'https://www.mysite.com
     }
 
+See below for an explanation of each setting.
+
 AUTOPROCESS
-~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~
 
 **Required**
 
@@ -82,8 +84,8 @@ pattern if not auto-processing is to have a celery task to process them::
     def process_notification(sender, **kwargs):
         tasks.process_notification.delay(notification=sender)
 
-SUCCESS_VIEW
-~~~~~~~~~~~~
+SUCCESS_URL
+~~~~~~~~~~~
 
 **Required**
 
@@ -100,8 +102,8 @@ corresponding URL pattern would look like this::
         name='payment_received',
     ),
 
-FAILURE_VIEW
-~~~~~~~~~~~~
+FAILURE_URL
+~~~~~~~~~~~
 
 **Required**
 
@@ -110,8 +112,8 @@ This url will receive as an argument the ``id`` of the preference that the user
 attempted to pay
 
 
-PENDING_VIEW
-~~~~~~~~~~~~
+PENDING_URL
+~~~~~~~~~~~
 
 **Required**
 
