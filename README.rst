@@ -1,12 +1,12 @@
 django-mercadopago
 ==================
 
-.. image:: https://gitlab.com/hobarrera/django-mercadopago/badges/master/build.svg
-  :target: https://gitlab.com/hobarrera/django-mercadopago/commits/master
+.. image:: https://travis-ci.com/WhyNotHugo/django-mercadopago.svg?branch=master
+  :target: https://travis-ci.com/WhyNotHugo/django-mercadopago
   :alt: build status
 
-.. image:: https://codecov.io/gl/hobarrera/django-mercadopago/branch/master/graph/badge.svg
-  :target: https://codecov.io/gl/hobarrera/django-mercadopago
+.. image:: https://codecov.io/gh/whynothugo/django-mercadopago/branch/master/graph/badge.svg
+  :target: https://codecov.io/gh/whynothugo/django-mercadopago
   :alt: coverage report
 
 .. image:: https://img.shields.io/pypi/v/django-mercadopago.svg
@@ -14,6 +14,7 @@ django-mercadopago
   :alt: version on pypi
 
 .. image:: https://img.shields.io/pypi/l/django-mercadopago.svg
+  :target: https://github.com/WhyNotHugo/django-mercadopago/blob/master/LICENCE
   :alt: licence
 
 **django-mercadopago** is a simple django application for interacting with

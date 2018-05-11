@@ -7,7 +7,7 @@ setup(
     description='MercadoPago integration for django',
     author='Hugo Osvaldo Barrera',
     author_email='hbarrera@z47.io',
-    url='https://gitlab.com/hobarrera/django-mercadopago',
+    url='https://github.com/WhyNotHugo/django-mercadopago',
     license='ISC',
     packages=find_packages(),
     long_description=open('README.rst').read(),
