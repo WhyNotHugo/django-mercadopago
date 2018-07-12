@@ -1,5 +1,6 @@
 import logging
 
+import requests
 from django.conf import settings
 from django.db import models
 from django.db import transaction
@@ -248,16 +249,23 @@ class Preference(models.Model):
 
     def poll_status(self):
         """
-        Manually poll for the status of this preference
+        Manually poll for the status of this preference.
         """
         service = self.owner.service
-        response = service.search_payment({
-            'external_reference': self.reference
-        })
-        if response['response']['results']:
+        response = requests.get(
+            'https://api.mercadopago.com/v1/payments/search',
+            params={
+                'access_token': service.get_access_token(),
+                'external_reference': self.reference,
+            },
+        )
+        response.raise_for_status()
+        response = response.json()
+
+        if response['results']:
             logger.info('Polled for %s. Creating Payment', self.pk)
             return Payment.objects.create_or_update_from_raw_data(
-                response['response']['results'][-1]
+                response['results'][-1]
             )
         else:
             logger.info('Polled for %s. No data', self.pk)
@@ -279,7 +287,9 @@ class Preference(models.Model):
 class PaymentManager(models.Manager):
 
     def create_or_update_from_raw_data(self, raw_data):
-        raw_data = raw_data['collection']
+        # Older endpoints will use this formats, newer one won't.
+        if 'collection' in raw_data:
+            raw_data = raw_data['collection']
 
         preference = Preference.objects.filter(
             reference=raw_data['external_reference'],
