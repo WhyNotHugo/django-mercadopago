@@ -157,6 +157,17 @@ Finally, you can handle payment notifications in real time using a
     def process_payment(sender, instance=None, created=False, **kwargs):
         do_stuff()
 
+To complete a full payment flow, you'd:
+
+* Create a ``Preference``.
+* Use ``preference.url`` to forward the user to the payment page.
+* If your webhooks are properly configured, the notification will be created as
+  soon as the user completes the operation.
+    * Depending on your ``AUTOPROCESS`` setting, the status may be updated
+      automatically, or may be up to you (see above).
+    * If you're not using webhooks, you'll have to poll the status manually
+      from time to time (using ``poll_status``).
+
 Backwards compatibility
 -----------------------
 
