@@ -39,6 +39,11 @@ Installation should generally be done via pip::
 
     pip install django-mercadopago
 
+If you'll be using the asynchronous processing, celery is required. You'll need
+to set up celery itself for your project as well, obviously::
+
+    pip install django-mercadopago[celery]
+
 Configuration
 -------------
 
