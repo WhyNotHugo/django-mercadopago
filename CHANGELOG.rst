@@ -1,6 +1,25 @@
 Changelog
 =========
 
+v5.0.4
+------
+* Improve the documentation.
+* Include an updated migration (just metadata has changed recently).
+
+v5.0.3
+------
+* Use a newer ``Payment`` search endpoint (this one is more reliable than the
+  previous one).
+
+v5.0.2
+------
+* Improve the documentation.
+* Move repository got GitHub + Travis CI.
+
+v5.0.1
+------
+* Fix crash introduced in v5.0.0
+
 v5.0.0
 ------
 * Drop compatibility with pre-4.3.0 callback URLs.
