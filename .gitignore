@@ -3,7 +3,6 @@
 
 build/
 dist/
-django_mercadopago_simple.egg-info/
-.eggs/
+*.egg*/
 .tox
 .coverage
