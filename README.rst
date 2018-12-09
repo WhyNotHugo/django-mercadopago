@@ -75,15 +75,19 @@ AUTOPROCESS
 
 **Required**
 
-If set to ``True``, notifications will be processed as soon as they are
-received. Otherwise, it's up to the developer to process them.
+If set to ``'SYNC'``, notifications will be processed as soon as they are
+received. If set to ``'ASYNC'``, notifications will be processed asynchronously.
+Celery is expected to be configured and running for this to works.
+
+If this variable is set to ``False``, notifications will not be processed and
+it will be up to the developer to call their ``process()`` method.
 
 A signal is always fired when a notification has been created, and a common
-pattern if not auto-processing is to have a celery task to process them::
+pattern if not auto-processing is to use your own queue mechanism::
 
     @receiver(notification_received)
     def process_notification(sender, **kwargs):
-        tasks.process_notification.delay(notification=sender)
+        add_to_some_queue(notification=sender)
 
 SUCCESS_URL
 ~~~~~~~~~~~
