@@ -48,7 +48,7 @@ class Account(models.Model):
         help_text=_('The APP_ID given by MercadoPago.'),
     )
     secret_key = models.CharField(
-        _('client id'),
+        _('secret key'),
         max_length=32,
         help_text=_('The SECRET_KEY given by MercadoPago.'),
     )
