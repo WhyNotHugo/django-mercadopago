@@ -1,6 +1,10 @@
 Changelog
 =========
 
+v5.1.0
+------
+* ``quantity`` field implemented on Preference model.
+
 v5.0.4
 ------
 * Improve the documentation.

@@ -85,6 +85,7 @@ class PreferenceManager(models.Manager):
         price,
         reference,
         account,
+        quantity=1,
         category='services',
         extra_fields=None,
         host=settings.MERCADOPAGO['base_host'],
@@ -99,6 +100,8 @@ class PreferenceManager(models.Manager):
             identify this preference.
         :param Account account: The account for which this payment is to be
             created.
+        :param quantity: The quantity for this preference.
+        :type quantity: integer
         :param dict extra_fields: Extra infromation to be sent with the
             preference creation (including payer). See the documentation[1] for
             details on avaiable fields.
@@ -126,7 +129,7 @@ class PreferenceManager(models.Manager):
                     'currency_id': 'ARS',
                     'description': description,
                     'category_id': category,
-                    'quantity': 1,
+                    'quantity': quantity,
                     # In case we get something like Decimal:
                     'unit_price': float(price),
                 }
@@ -153,6 +156,7 @@ class PreferenceManager(models.Manager):
         preference = Preference(
             title=title,
             price=price,
+            quantity=quantity,
             mp_id=pref_result['response']['id'],
             payment_url=pref_result['response']['init_point'],
             sandbox_url=pref_result['response']['sandbox_init_point'],
@@ -189,6 +193,10 @@ class Preference(models.Model):
         max_digits=15,
         decimal_places=2,
     )
+    quantity = models.PositiveIntegerField(
+        _('quantity'),
+        default=1,
+    )
     # Doc says it's a UUID. It's not.
     mp_id = models.CharField(
         _('mercadopago id'),
@@ -222,7 +230,7 @@ class Preference(models.Model):
         else:
             return self.payment_url
 
-    def update(self, title=None, price=None):
+    def update(self, title=None, price=None, quantity=None):
         """
         Updates the upstream Preference with the supplied title and price.
         """
@@ -230,6 +238,8 @@ class Preference(models.Model):
             self.price = price
         if title:
             self.title = title
+        if quantity:
+            self.quantity = quantity
 
         service = self.owner.service
         service.update_preference(
@@ -238,7 +248,7 @@ class Preference(models.Model):
                 'items': [
                     {
                         'title': self.title,
-                        'quantity': 1,
+                        'quantity': self.quantity,
                         'currency_id': 'ARS',
                         'unit_price': float(self.price),
                     }
