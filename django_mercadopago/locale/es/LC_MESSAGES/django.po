@@ -58,6 +58,9 @@ msgstr "título"
 msgid "price"
 msgstr "precio"
 
+msgid "quantity"
+msgstr "Cantidad"
+
 msgid "mercadopago id"
 msgstr "id mercadopago"
 
