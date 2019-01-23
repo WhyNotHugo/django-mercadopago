@@ -193,7 +193,7 @@ class Preference(models.Model):
         max_digits=15,
         decimal_places=2,
     )
-    quantity = models.IntegerField(
+    quantity = models.PositiveIntegerField(
         _('quantity'),
         default=1,
     )

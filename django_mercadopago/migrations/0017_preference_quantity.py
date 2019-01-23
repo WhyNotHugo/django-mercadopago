@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='preference',
             name='quantity',
-            field=models.IntegerField(
+            field=models.PositiveIntegerField(
                 default=1,
                 verbose_name='quantity'
             ),

@@ -59,7 +59,7 @@ msgid "price"
 msgstr "precio"
 
 msgid "quantity"
-msgstr "Cantidad"
+msgstr "cantidad"
 
 msgid "mercadopago id"
 msgstr "id mercadopago"
