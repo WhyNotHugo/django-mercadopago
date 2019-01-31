@@ -1,6 +1,10 @@
 Changelog
 =========
 
+v5.1.1
+------
+* ``mp_id`` field in Payment model is not unique.
+
 v5.1.0
 ------
 * ``quantity`` field implemented on Preference model.

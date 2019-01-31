@@ -348,7 +348,6 @@ class Payment(models.Model):
 
     mp_id = models.IntegerField(
         _('mp id'),
-        unique=True,
     )
 
     preference = models.ForeignKey(
