@@ -1,9 +1,14 @@
 Changelog
 =========
 
+v5.1.1
+------
+
+* Fixed issues storing ``Payment.mp_id`` when using MariaDB.
+
 v5.1.0
 ------
-* ``quantity`` field implemented on Preference model.
+* Added ``quantity`` field to ``Preference`` model.
 
 v5.0.4
 ------
