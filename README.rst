@@ -138,13 +138,20 @@ Usage
 MercadoPago lets you create preferences, for which you'll later receive
 notifications (indicating if it was paid, or what happened)::
 
-    self.preference = Preference.objects.create(
-        title='the product name',
-        price=10.0,
+    preference = Preference.objects.create(
+        owner=my_account,
         reference='order-38452',
-        success_url='http://example.com/mp_done',
-        account=account,
     )
+
+    item = Item.objects.create(
+        preference=preference,
+        title='Candy box',
+        quanityty=2,
+        unit_price=10.0,
+    )
+
+    preference.submit()
+
 
 If your app will only be using a single MercadoPago account, just use::
 
