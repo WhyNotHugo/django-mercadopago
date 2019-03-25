@@ -118,32 +118,20 @@ class Preference(models.Model):
         else:
             return self.payment_url
 
-    def update(self, title=None, price=None, quantity=None):
+    def update(self, extra_fields=None):
         """
-        Updates the upstream Preference with the supplied title and price.
+        Updates the upstream Preference with the items and extra_fields.
         """
-        if price:
-            self.price = price
-        if title:
-            self.title = title
-        if quantity:
-            self.quantity = quantity
+        if not self.mp_id:
+            logger.warning('Refusing to update non submitted preference.')
+            return
 
         service = self.owner.service
-        service.update_preference(
-            self.mp_id,
-            {
-                'items': [
-                    {
-                        'title': self.title,
-                        'quantity': self.quantity,
-                        'currency_id': 'ARS',
-                        'unit_price': float(self.price),
-                    }
-                ]
-            }
-        )
-        self.save()
+        request = {
+            'items': [item.serialize() for item in self.items.all()]
+        }
+        request.update(extra_fields or {})
+        service.update_preference(self.mp_id, request)
 
     def submit(
         self,
