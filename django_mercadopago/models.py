@@ -282,7 +282,7 @@ class Item(models.Model):
             'currency_id': 'ARS',
             'description': self.description,
             'quantity': self.quantity,
-            'unit_price': float(self.price),
+            'unit_price': float(self.unit_price),
         }
 
     class Meta:
