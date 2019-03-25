@@ -197,7 +197,7 @@ class Preference(models.Model):
         }
         request.update(extra_fields)
 
-        mercadopago_service = self.account.service
+        mercadopago_service = self.owner.service
         pref_result = mercadopago_service.create_preference(request)
 
         if pref_result['status'] >= 300:
