@@ -23,17 +23,20 @@ class PreferenceFactory(DjangoModelFactory):
         model = models.Preference
 
     owner = SubFactory(AccountFactory)
-    title = Sequence(lambda n: 'preference_%d' % n)
-    price = 120
-    mp_id = '2hLhPNlP3DJvMW48dAYn'
+    # mp_id = Sequence(lambda n: '2hLhPNlP3DJvMW48dAYn%d' % n)
     payment_url = 'http://localhost/post_payment'
     sandbox_url = 'http://localhost:8000/post_payment'
     reference = Sequence(lambda n: 'REF_%d' % n)
 
-    @classmethod
-    def _create(cls, model_class, *args, **kwargs):
-        manager = model_class._base_manager
-        return manager.create(*args, **kwargs)
+
+class ItemFactory(DjangoModelFactory):
+    class Meta:
+        model = models.Item
+
+    preference = SubFactory(PreferenceFactory)
+    title = Sequence(lambda n: 'item_%d' % n)
+    description = Sequence(lambda n: 'item_description_%d' % n)
+    unit_price = 10.0
 
 
 class PaymentFactory(DjangoModelFactory):

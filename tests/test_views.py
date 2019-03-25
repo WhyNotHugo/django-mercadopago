@@ -1,14 +1,20 @@
 from unittest.mock import patch
 
-from django.test import Client, RequestFactory, TestCase
+from django.test import Client, RequestFactory, TestCase, utils
 
 from django_mercadopago import fixtures, models, views
 
 
+@utils.override_settings(ROOT_URLCONF='tests.test_urls')  # Django<=1.11.11
 class CreateNotificationTestCase(TestCase):
+    urls = 'tests.test_urls'  # Django>=2.0
+
     def setUp(self):
         self.account = fixtures.AccountFactory()
         self.preference = fixtures.PreferenceFactory()
+        self.item1 = fixtures.ItemFactory(preference=self.preference)
+        self.item2 = fixtures.ItemFactory(preference=self.preference)
+        self.preference.submit()
 
     def test_missing_topic(self):
         client = Client()
@@ -108,9 +114,15 @@ class CreateNotificationTestCase(TestCase):
     # XXX: Add tests for POST notifications
 
 
+@utils.override_settings(ROOT_URLCONF='tests.test_urls')  # Django<=1.11.11
 class PaymentSuccessViewTestCase(TestCase):
+    urls = 'tests.test_urls'  # Django>=2.0
+
     def setUp(self):
         self.preference = fixtures.PreferenceFactory()
+        self.item1 = fixtures.ItemFactory(preference=self.preference)
+        self.item2 = fixtures.ItemFactory(preference=self.preference)
+        self.preference.submit()
 
     def test_redirect_to_view(self):
         view = views.PaymentSuccessView()
@@ -132,9 +144,15 @@ class PaymentSuccessViewTestCase(TestCase):
         )
 
 
+@utils.override_settings(ROOT_URLCONF='tests.test_urls')  # Django<=1.11.11
 class PaymentFailureViewTestCase(TestCase):
+    urls = 'tests.test_urls'  # Django>=2.0
+
     def setUp(self):
         self.preference = fixtures.PreferenceFactory()
+        self.item1 = fixtures.ItemFactory(preference=self.preference)
+        self.item2 = fixtures.ItemFactory(preference=self.preference)
+        self.preference.submit()
 
     def test_redirect_to_view(self):
         view = views.PaymentFailedView()
@@ -155,9 +173,15 @@ class PaymentFailureViewTestCase(TestCase):
         )
 
 
+@utils.override_settings(ROOT_URLCONF='tests.test_urls')  # Django<=1.11.11
 class PaymentPendingViewTestCase(TestCase):
+    urls = 'tests.test_urls'  # Django>=2.0
+
     def setUp(self):
         self.preference = fixtures.PreferenceFactory()
+        self.item1 = fixtures.ItemFactory(preference=self.preference)
+        self.item2 = fixtures.ItemFactory(preference=self.preference)
+        self.preference.submit()
 
     def test_redirect_to_view(self):
         view = views.PaymentPendingView()
