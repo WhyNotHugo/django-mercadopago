@@ -6,9 +6,13 @@ from django_mercadopago import fixtures, models, views
 
 
 class CreateNotificationTestCase(TestCase):
+
     def setUp(self):
         self.account = fixtures.AccountFactory()
         self.preference = fixtures.PreferenceFactory()
+        self.item1 = fixtures.ItemFactory(preference=self.preference)
+        self.item2 = fixtures.ItemFactory(preference=self.preference)
+        self.preference.submit()
 
     def test_missing_topic(self):
         client = Client()
@@ -109,8 +113,12 @@ class CreateNotificationTestCase(TestCase):
 
 
 class PaymentSuccessViewTestCase(TestCase):
+
     def setUp(self):
         self.preference = fixtures.PreferenceFactory()
+        self.item1 = fixtures.ItemFactory(preference=self.preference)
+        self.item2 = fixtures.ItemFactory(preference=self.preference)
+        self.preference.submit()
 
     def test_redirect_to_view(self):
         view = views.PaymentSuccessView()
@@ -133,8 +141,12 @@ class PaymentSuccessViewTestCase(TestCase):
 
 
 class PaymentFailureViewTestCase(TestCase):
+
     def setUp(self):
         self.preference = fixtures.PreferenceFactory()
+        self.item1 = fixtures.ItemFactory(preference=self.preference)
+        self.item2 = fixtures.ItemFactory(preference=self.preference)
+        self.preference.submit()
 
     def test_redirect_to_view(self):
         view = views.PaymentFailedView()
@@ -156,8 +168,12 @@ class PaymentFailureViewTestCase(TestCase):
 
 
 class PaymentPendingViewTestCase(TestCase):
+
     def setUp(self):
         self.preference = fixtures.PreferenceFactory()
+        self.item1 = fixtures.ItemFactory(preference=self.preference)
+        self.item2 = fixtures.ItemFactory(preference=self.preference)
+        self.preference.submit()
 
     def test_redirect_to_view(self):
         view = views.PaymentPendingView()
