@@ -17,7 +17,7 @@ DATABASES = {
         'NAME': ':memory:',
     }
 }
-ROOT_URLCONF = 'django_mercadopago.urls'
+ROOT_URLCONF = 'tests.test_urls'
 
 MERCADOPAGO = {
     'autoprocess': False,

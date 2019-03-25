@@ -1,13 +1,11 @@
 from unittest.mock import patch
 
-from django.test import Client, RequestFactory, TestCase, utils
+from django.test import Client, RequestFactory, TestCase
 
 from django_mercadopago import fixtures, models, views
 
 
-@utils.override_settings(ROOT_URLCONF='tests.test_urls')  # Django<=1.11.11
 class CreateNotificationTestCase(TestCase):
-    urls = 'tests.test_urls'  # Django>=2.0
 
     def setUp(self):
         self.account = fixtures.AccountFactory()
@@ -114,9 +112,7 @@ class CreateNotificationTestCase(TestCase):
     # XXX: Add tests for POST notifications
 
 
-@utils.override_settings(ROOT_URLCONF='tests.test_urls')  # Django<=1.11.11
 class PaymentSuccessViewTestCase(TestCase):
-    urls = 'tests.test_urls'  # Django>=2.0
 
     def setUp(self):
         self.preference = fixtures.PreferenceFactory()
@@ -144,9 +140,7 @@ class PaymentSuccessViewTestCase(TestCase):
         )
 
 
-@utils.override_settings(ROOT_URLCONF='tests.test_urls')  # Django<=1.11.11
 class PaymentFailureViewTestCase(TestCase):
-    urls = 'tests.test_urls'  # Django>=2.0
 
     def setUp(self):
         self.preference = fixtures.PreferenceFactory()
@@ -173,9 +167,7 @@ class PaymentFailureViewTestCase(TestCase):
         )
 
 
-@utils.override_settings(ROOT_URLCONF='tests.test_urls')  # Django<=1.11.11
 class PaymentPendingViewTestCase(TestCase):
-    urls = 'tests.test_urls'  # Django>=2.0
 
     def setUp(self):
         self.preference = fixtures.PreferenceFactory()
