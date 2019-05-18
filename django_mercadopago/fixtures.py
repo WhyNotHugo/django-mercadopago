@@ -9,10 +9,10 @@ from django_mercadopago import models
 class AccountFactory(DjangoModelFactory):
     class Meta:
         model = models.Account
-        django_get_or_create = ('name',)
+        django_get_or_create = ('name', 'slug', )
 
     name = 'Test account'
-    slug = 'test'
+    slug = Sequence(lambda n: 'test_%d' % n)
     app_id = 'zWFmI1iAcw0mwEqf'
     secret_key = '3NjwHgyWcIDisf7MYk1UgWSTFe47DBwe'
     sandbox = True
