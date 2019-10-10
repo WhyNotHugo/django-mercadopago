@@ -278,7 +278,7 @@ class Item(models.Model):
     def serialize(self):
         return {
             'title': self.title,
-            'currency_id': 'ARS',
+            'currency_id': self.currency_id,
             'description': self.description,
             'quantity': self.quantity,
             'unit_price': float(self.price),
