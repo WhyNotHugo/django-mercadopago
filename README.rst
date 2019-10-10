@@ -163,10 +163,11 @@ To complete a full payment flow, you'd:
 * Use ``preference.url`` to forward the user to the payment page.
 * If your webhooks are properly configured, the notification will be created as
   soon as the user completes the operation.
-    * Depending on your ``AUTOPROCESS`` setting, the status may be updated
-      automatically, or may be up to you (see above).
-    * If you're not using webhooks, you'll have to poll the status manually
-      from time to time (using ``poll_status``).
+
+  * Depending on your ``AUTOPROCESS`` setting, the status may be updated
+    automatically, or may be up to you (see above).
+  * If you're not using webhooks, you'll have to poll the status manually
+    from time to time (using ``poll_status``).
 
 Backwards compatibility
 -----------------------

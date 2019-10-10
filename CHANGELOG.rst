@@ -5,6 +5,7 @@ v5.1.1
 ------
 
 * Fixed issues storing ``Payment.mp_id`` when using MariaDB.
+* Fix README not rendering as expected on PyPI.
 
 v5.1.0
 ------
