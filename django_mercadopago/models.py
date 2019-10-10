@@ -163,7 +163,7 @@ class Preference(models.Model):
         [1]: https://www.mercadopago.com.ar/developers/es/api-docs/basic-checkout/checkout-preferences/
         """  # noqa: E501
         if self.mp_id:
-            logger.warning('Refusing to send already-send preference.')
+            logger.warning('Refusing to send already-sent preference.')
             return
 
         extra_fields = extra_fields or {}
