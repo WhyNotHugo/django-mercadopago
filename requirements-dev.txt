@@ -1,2 +1,6 @@
 coverage
 factory-boy
+pytest
+pytest-cov
+pytest-django
+responses
