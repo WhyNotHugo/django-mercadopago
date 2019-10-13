@@ -12,9 +12,4 @@ jobs:
         with:
           python-version: 3.7
           architecture: x64
-      - name: Install test dependencies
-        run: pip install tox
-      - name: Run flake8
-        run: tox
-        env:
-          TOXENV: flake8
+      - uses: WhyNotHugo/python-linting
