@@ -12,4 +12,4 @@ jobs:
         with:
           python-version: 3.7
           architecture: x64
-      - uses: WhyNotHugo/python-linting
+      - uses: WhyNotHugo/python-linting@master
