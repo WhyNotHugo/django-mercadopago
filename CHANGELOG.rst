@@ -1,6 +1,11 @@
 Changelog
 =========
 
+v6.0.0
+------
+
+* Add support for multiple items per preference.
+
 v5.1.2
 ------
 

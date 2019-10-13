@@ -72,103 +72,6 @@ class Account(models.Model):
         return MercadoPagoService(self)
 
 
-class PreferenceManager(models.Manager):
-    """
-    Wraps mercadopago in a very simple interface that creates and manages
-    django objects.
-    """
-
-    def create(
-        self,
-        title,
-        description,
-        price,
-        reference,
-        account,
-        quantity=1,
-        category='services',
-        extra_fields=None,
-        host=settings.MERCADOPAGO['base_host'],
-    ):
-        """
-        Creates a new preference and registers it in MercadoPago's API.
-
-        :param str title: The title users will see in MercadoPago
-        :param price: The price for this preference.
-        :type price: float or Decimal
-        :param str reference: A reference by which we'll later search for and
-            identify this preference.
-        :param Account account: The account for which this payment is to be
-            created.
-        :param quantity: The quantity for this preference.
-        :type quantity: integer
-        :param dict extra_fields: Extra infromation to be sent with the
-            preference creation (including payer). See the documentation[1] for
-            details on avaiable fields.
-        :param str host: The host to prepend to notification and return URLs.
-            This should be the host for the cannonical URL where this app is
-            served.
-
-        [1]: https://www.mercadopago.com.ar/developers/es/api-docs/basic-checkout/checkout-preferences/
-        """  # noqa
-        extra_fields = extra_fields or {}
-
-        notification_url = host + reverse(
-            'mp:notifications', args=(reference,)
-        )
-        success_url = host + reverse('mp:payment_success', args=(reference,))
-        failure_url = host + reverse('mp:payment_failure', args=(reference,))
-        pending_url = host + reverse('mp:payment_pending', args=(reference,))
-
-        # TODO: validate that reference is unused
-        preference_request = {
-            'auto_return': 'all',
-            'items': [
-                {
-                    'title': title,
-                    'currency_id': 'ARS',
-                    'description': description,
-                    'category_id': category,
-                    'quantity': quantity,
-                    # In case we get something like Decimal:
-                    'unit_price': float(price),
-                }
-            ],
-            'external_reference': reference,
-            'back_urls': {
-                'success': success_url,
-                'pending': pending_url,
-                'failure': failure_url,
-            },
-            'notification_url': notification_url,
-        }
-        preference_request.update(extra_fields)
-
-        mercadopago_service = account.service
-        pref_result = mercadopago_service.create_preference(preference_request)
-
-        if pref_result['status'] >= 300:
-            logger.warning('MercadoPago returned non-200', pref_result)
-            raise MercadoPagoServiceException(
-                'MercadoPago failed to create preference', pref_result
-            )
-
-        preference = Preference(
-            title=title,
-            price=price,
-            quantity=quantity,
-            mp_id=pref_result['response']['id'],
-            payment_url=pref_result['response']['init_point'],
-            sandbox_url=pref_result['response']['sandbox_init_point'],
-            # TODO: Make prefix configurable?
-            reference=reference,
-            owner=account,
-        )
-
-        preference.save()
-        return preference
-
-
 class Preference(models.Model):
     """
     An MP payment preference.
@@ -183,24 +86,11 @@ class Preference(models.Model):
         related_name='preferences',
         on_delete=models.PROTECT,
     )
-
-    title = models.CharField(
-        _('title'),
-        max_length=256,
-    )
-    price = models.DecimalField(
-        _('price'),
-        max_digits=15,
-        decimal_places=2,
-    )
-    quantity = models.PositiveIntegerField(
-        _('quantity'),
-        default=1,
-    )
     # Doc says it's a UUID. It's not.
     mp_id = models.CharField(
         _('mercadopago id'),
         max_length=46,
+        null=True,
         help_text=_('The id MercadoPago has assigned for this Preference')
     )
 
@@ -221,8 +111,6 @@ class Preference(models.Model):
         help_text=_('Indicates if the preference has been paid.'),
     )
 
-    objects = PreferenceManager()
-
     @property
     def url(self):
         if self.owner.sandbox:
@@ -235,7 +123,7 @@ class Preference(models.Model):
         Updates the upstream Preference with the supplied title and price.
         """
         if price:
-            self.price = price
+            self.unit_price = price
         if title:
             self.title = title
         if quantity:
@@ -250,11 +138,76 @@ class Preference(models.Model):
                         'title': self.title,
                         'quantity': self.quantity,
                         'currency_id': 'ARS',
-                        'unit_price': float(self.price),
+                        'unit_price': float(self.unit_price),
                     }
                 ]
             }
         )
+        self.save()
+
+    def submit(
+        self,
+        extra_fields=None,
+        host=settings.MERCADOPAGO['base_host'],
+    ):
+        """
+        Submit this preference to MercadoPago's API.
+
+        :param dict extra_fields: Extra infromation to be sent with the
+            preference creation (including payer). See the documentation[1] for
+            details on avaiable fields.
+        :param str host: The host to prepend to notification and return URLs.
+            This should be the host for the cannonical URL where this app is
+            served.
+
+        [1]: https://www.mercadopago.com.ar/developers/es/api-docs/basic-checkout/checkout-preferences/
+        """  # noqa: E501
+        if self.mp_id:
+            logger.warning('Refusing to send already-sent preference.')
+            return
+
+        extra_fields = extra_fields or {}
+
+        notification_url = host + reverse(
+            'mp:notifications', args=(self.reference,)
+        )
+        success_url = host + reverse(
+            'mp:payment_success',
+            args=(self.reference,),
+        )
+        failure_url = host + reverse(
+            'mp:payment_failure',
+            args=(self.reference,),
+        )
+        pending_url = host + reverse(
+            'mp:payment_pending',
+            args=(self.reference,),
+        )
+
+        request = {
+            'auto_return': 'all',
+            'items': [item.serialize() for item in self.items.all()],
+            'external_reference': self.reference,
+            'back_urls': {
+                'success': success_url,
+                'pending': pending_url,
+                'failure': failure_url,
+            },
+            'notification_url': notification_url,
+        }
+        request.update(extra_fields)
+
+        mercadopago_service = self.owner.service
+        pref_result = mercadopago_service.create_preference(request)
+
+        if pref_result['status'] >= 300:
+            raise MercadoPagoServiceException(
+                'MercadoPago failed to create preference', pref_result
+            )
+
+        self.mp_id = pref_result['response']['id']
+        self.payment_url = pref_result['response']['init_point']
+        self.sandbox_url = pref_result['response']['sandbox_init_point']
         self.save()
 
     def poll_status(self):
@@ -292,6 +245,49 @@ class Preference(models.Model):
 
     def __str__(self):
         return self.mp_id
+
+
+class Item(models.Model):
+    preference = models.ForeignKey(
+        Preference,
+        verbose_name=_('preference'),
+        related_name='items',
+        on_delete=models.PROTECT,
+    )
+    title = models.CharField(
+        _('title'),
+        max_length=256,
+    )
+    currency_id = models.CharField(
+        _('currency id'),
+        default='ARS',
+        max_length=3,
+    )
+    description = models.CharField(
+        _('description'),
+        max_length=256,
+    )
+    quantity = models.PositiveSmallIntegerField(
+        default=1,
+    )
+    unit_price = models.DecimalField(
+        max_digits=9,
+        decimal_places=2,
+    )
+
+    def serialize(self):
+        return {
+            'category_id': 'services',
+            'currency_id': self.currency_id,
+            'description': self.description,
+            'quantity': self.quantity,
+            'title': self.title,
+            'unit_price': float(self.unit_price),
+        }
+
+    class Meta:
+        verbose_name = _('item')
+        verbose_name_plural = _('items')
 
 
 class PaymentManager(models.Manager):
