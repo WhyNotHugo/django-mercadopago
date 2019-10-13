@@ -11,7 +11,13 @@ setup(
     license='ISC',
     packages=find_packages(),
     long_description=open('README.rst').read(),
-    install_requires=open('requirements.txt').readlines(),
+    install_requires=[
+        'wheel>=0.26.0',
+        'Django>=1.8.5',
+        'mercadopago>=0.3.4',
+        'setuptools-git>=1.1',
+        'setuptools-scm>=1.8.0',
+    ],
     use_scm_version={'version_scheme': 'post-release'},
     setup_requires=['setuptools_scm'],
     extras_require={
