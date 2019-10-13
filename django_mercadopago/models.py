@@ -123,7 +123,7 @@ class Preference(models.Model):
         Updates the upstream Preference with the supplied title and price.
         """
         if price:
-            self.price = price
+            self.unit_price = price
         if title:
             self.title = title
         if quantity:
@@ -138,7 +138,7 @@ class Preference(models.Model):
                         'title': self.title,
                         'quantity': self.quantity,
                         'currency_id': 'ARS',
-                        'unit_price': float(self.price),
+                        'unit_price': float(self.unit_price),
                     }
                 ]
             }
@@ -197,7 +197,7 @@ class Preference(models.Model):
         }
         request.update(extra_fields)
 
-        mercadopago_service = self.account.service
+        mercadopago_service = self.owner.service
         pref_result = mercadopago_service.create_preference(request)
 
         if pref_result['status'] >= 300:
@@ -205,9 +205,9 @@ class Preference(models.Model):
                 'MercadoPago failed to create preference', pref_result
             )
 
-        self.mp_id = pref_result['response']['id'],
-        self.payment_url = pref_result['response']['init_point'],
-        self.sandbox_url = pref_result['response']['sandbox_init_point'],
+        self.mp_id = pref_result['response']['id']
+        self.payment_url = pref_result['response']['init_point']
+        self.sandbox_url = pref_result['response']['sandbox_init_point']
         self.save()
 
     def poll_status(self):
@@ -277,11 +277,12 @@ class Item(models.Model):
 
     def serialize(self):
         return {
-            'title': self.title,
+            'category_id': 'services',
             'currency_id': self.currency_id,
             'description': self.description,
             'quantity': self.quantity,
-            'unit_price': float(self.price),
+            'title': self.title,
+            'unit_price': float(self.unit_price),
         }
 
     class Meta:
