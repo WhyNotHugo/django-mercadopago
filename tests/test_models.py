@@ -23,11 +23,11 @@ preference_response = {
         'id': '',
         'picture_url': '',
         'title': 'Test',
-        'description': 'Something that a client bought.',
+        'description': 'A nice, high quality product.',
         'category_id': 'services',
         'currency_id': 'ARS',
         'quantity': 1,
-        'unit_price': 100
+        'unit_price': 120
     }],
     'payer': {
         'name': '',
@@ -98,16 +98,11 @@ def test_preference_request():
         status=200,
     )
 
-    preference = models.Preference.objects.create(
-        owner=fixtures.AccountFactory(),
+    preference = fixtures.PreferenceFactory(
+        mp_id=None,
         reference="ref-123",
     )
-    models.Item.objects.create(
-        description="Something that a client bought.",
-        preference=preference,
-        title="Test",
-        unit_price=100,
-    )
+    fixtures.ItemFactory(preference=preference, title="Test")
     preference.submit()
 
     expected_url = (
@@ -120,10 +115,10 @@ def test_preference_request():
         "items": [{
             "title": "Test",
             "currency_id": "ARS",
-            "description": "Something that a client bought.",
+            "description": "A nice, high quality product.",
             "category_id": "services",
             "quantity": 1,
-            "unit_price": 100.0
+            "unit_price": 120.0
         }],
         "external_reference":
         "ref-123",
@@ -166,24 +161,18 @@ def test_preference_creation():
         status=200,
     )
 
-    account = fixtures.AccountFactory()
-    preference = models.Preference.objects.create(
-        owner=account,
+    preference = fixtures.PreferenceFactory(
+        mp_id=None,
         reference="ref-123",
     )
-    models.Item.objects.create(
-        description="Something that a client bought.",
-        preference=preference,
-        title="Test",
-        unit_price=100,
-    )
+    fixtures.ItemFactory(preference=preference, title="Test")
     preference.submit()
 
     assert preference.items.first().title == 'Test'
-    assert preference.items.first().unit_price == 100
+    assert preference.items.first().unit_price == 120
     assert preference.items.first().quantity == 1
     assert preference.mp_id == '152658942-f090626e-6d4d-4877-a3d5-292e8877e4cb'
     assert preference.payment_url == 'https://www.mercadopago.com/init_point'
     assert preference.sandbox_url == 'https://sbox.mercadopago.com/init_point'
     assert preference.reference == 'ref-123'
-    assert preference.owner == account
+    assert isinstance(preference.owner, models.Account)
