@@ -69,6 +69,9 @@ class Account(models.Model):
 
     @property
     def service(self):
+        service_class = settings.MERCADOPAGO.get('service_class')
+        if service_class:
+            return service_class(self)
         return MercadoPagoService(self)
 
 
