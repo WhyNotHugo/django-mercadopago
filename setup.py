@@ -22,6 +22,7 @@ setup(
     setup_requires=['setuptools_scm'],
     extras_require={
         'fixtures': ['factory-boy'],
+        'celery-task': ['celery'],
     },
     classifiers=[
         'Development Status :: 4 - Beta',

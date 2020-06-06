@@ -34,8 +34,6 @@ def _create_notification(reference, topic, resource_id):
         },
     )
 
-    if settings.MERCADOPAGO['autoprocess']:
-        notification.process()
     signals.notification_received.send(sender=notification)
 
     return notification, created
