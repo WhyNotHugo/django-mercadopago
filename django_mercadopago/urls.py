@@ -1,26 +1,26 @@
-from django.conf.urls import url
+from django.urls import path
 
 from . import views
 
 urlpatterns = [
-    url(
-        r'^notifications/(?P<reference>.*)$',
+    path(
+        "notifications/<reference>",
         views.NotificationView.as_view(),
-        name='notifications'
+        name="notifications",
     ),
-    url(
-        r'^post_payment/(?P<reference>.*)$',
+    path(
+        "post_payment/<reference>",
         views.PaymentSuccessView.as_view(),
-        name='payment_success',
+        name="payment_success",
     ),
-    url(
-        r'^payment_failed/(?P<reference>.*)$',
+    path(
+        "payment_failed/<reference>",
         views.PaymentFailedView.as_view(),
-        name='payment_failure',
+        name="payment_failure",
     ),
-    url(
-        r'^payment_pending/(?P<reference>.*)$',
+    path(
+        "payment_pending/<reference>",
         views.PaymentPendingView.as_view(),
-        name='payment_pending',
+        name="payment_pending",
     ),
 ]
