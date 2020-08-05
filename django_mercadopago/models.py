@@ -1,3 +1,4 @@
+import json
 import logging
 
 import requests
@@ -226,7 +227,7 @@ class Preference(models.Model):
         response = response.json()
 
         if response['results']:
-            logger.info('Polled for %s. Creating Payment', self.pk)
+            logger.info('Polled for %s. Found a Payment.', self.pk)
             return Payment.objects.create_or_update_from_raw_data(
                 response['results'][-1]
             )
@@ -323,6 +324,10 @@ class PaymentManager(models.Manager):
             mp_id=raw_data['id'],
             defaults=payment_data,
         )
+        if created:
+            logger.info('New payment created.')
+        else:
+            logger.info('Payment already registered locally, nothing created.')
 
         if payment.status == 'approved' and \
            payment.status_detail == 'accredited':
@@ -473,7 +478,14 @@ class Notification(models.Model):
             return
 
         mercadopago_service = self.owner.service
-        raw_data = mercadopago_service.get_payment_info(self.resource_id)
+        try:
+            raw_data = mercadopago_service.get_payment_info(self.resource_id)
+        except json.JSONDecodeError:
+            # XXX: Actually, we need to write our own client that returns the
+            # real error (at least status code).
+            self.status = Notification.STATUS_ERROR
+            self.save()
+            return
 
         if raw_data['status'] != 200:
             logger.warning(
