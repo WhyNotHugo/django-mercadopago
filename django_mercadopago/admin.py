@@ -25,7 +25,7 @@ class AccountAdmin(admin.ModelAdmin):
 
         return "-"
 
-    access_token.short_description = _("access token")
+    access_token.short_description = "access_token"
 
 
 @admin.register(models.Preference)

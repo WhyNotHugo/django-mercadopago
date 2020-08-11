@@ -29,9 +29,7 @@ class MercadoPagoService(MP):
 
 
 class Account(models.Model):
-    """
-    A mercadopago account, aka "application".
-    """
+    """A MercadoPago account, aka "application"."""
 
     name = models.CharField(
         _("name"),
@@ -44,12 +42,18 @@ class Account(models.Model):
         help_text=_("This slug is used for this account's notification URL."),
     )
     app_id = models.CharField(
-        _("client id"), max_length=16, help_text=_("The APP_ID given by MercadoPago."),
+        max_length=16,
+        help_text=_(
+            "The CLIENT_ID given by MercadoPago.  This is called APP_ID by"
+            " MercadoLibre."
+        ),
     )
     secret_key = models.CharField(
-        _("secret key"),
         max_length=32,
-        help_text=_("The SECRET_KEY given by MercadoPago."),
+        help_text=_(
+            "The CLIENT_SECRET given by MercadoPago. This is called SECRET_KEY by"
+            " MercadoLibre."
+        ),
     )
     sandbox = models.BooleanField(
         _("sandbox"),

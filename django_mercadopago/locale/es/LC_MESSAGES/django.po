@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-18 22:05-0300\n"
-"PO-Revision-Date: 2015-10-18 22:05-0300\n"
+"POT-Creation-Date: 2020-08-10 19:23-0500\n"
+"PO-Revision-Date: 2020-08-11 02:23+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -16,7 +16,18 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.5\n"
+"X-Generator: Poedit 2.3.1\n"
+
+#, python-format
+msgid "%d payments created."
+msgstr "%d pagos creados."
+
+msgid "poll status"
+msgstr "obtener estado"
+
+msgid "Poll MercadoPago to fetch and possible updates to unpaid Preferences."
+msgstr ""
+"Obtener el estado  y posibles actualizaciones para preferencias impagas."
 
 msgid "name"
 msgstr "nombre"
@@ -30,14 +41,17 @@ msgstr "slug"
 msgid "This slug is used for this account's notification URL."
 msgstr "El slug es usado para la URL de notificaciones de esta cuenta."
 
-msgid "client id"
-msgstr "id de cliente"
+msgid ""
+"The CLIENT_ID given by MercadoPago.  This is called APP_ID by MercadoLibre."
+msgstr ""
+"El CLIENT_ID dado por MercadoPago. Esto se llama APP_ID en MercadoLibre."
 
-msgid "The APP_ID given by MercadoPago."
-msgstr "El APP_ID dato por MercadoPago."
-
-msgid "The SECRET_KEY given by MercadoPago."
-msgstr "El SECRET_KEY dado por MercadoPago."
+msgid ""
+"The CLIENT_SECRET given by MercadoPago. This is called SECRET_KEY by "
+"MercadoLibre."
+msgstr ""
+"El CLIENT_SECRET dado por MercadoPago. Esto se llama SECRET_KEY en "
+"MercadoLibre."
 
 msgid "sandbox"
 msgstr "sandbox"
@@ -51,15 +65,6 @@ msgstr ""
 
 msgid "owner"
 msgstr "dueño"
-
-msgid "title"
-msgstr "título"
-
-msgid "price"
-msgstr "precio"
-
-msgid "quantity"
-msgstr "cantidad"
 
 msgid "mercadopago id"
 msgstr "id mercadopago"
@@ -77,16 +82,31 @@ msgid "reference"
 msgstr "referencia"
 
 msgid "paid"
-msgstr "Pagado"
+msgstr "pagado"
 
 msgid "Indicates if the preference has been paid."
-msgstr "Indica si la preferencia ha sido pagada"
-
-msgid "mp id"
-msgstr "mp id"
+msgstr "Indica si la preferencia ha sido pagada."
 
 msgid "preference"
 msgstr "preferencia"
+
+msgid "title"
+msgstr "título"
+
+msgid "currency id"
+msgstr "id moneda"
+
+msgid "description"
+msgstr "descripción"
+
+msgid "item"
+msgstr "item"
+
+msgid "items"
+msgstr "items"
+
+msgid "mp id"
+msgstr "mp id"
 
 msgid "status"
 msgstr "estado"
@@ -106,8 +126,14 @@ msgstr "notificación"
 msgid "The notification that informed us of this payment."
 msgstr "La notificación que nos informó de este pago."
 
-msgid "Unprocessed"
-msgstr "Sin procesar"
+msgid "Pending"
+msgstr "Pendiente"
+
+msgid "Processed"
+msgstr "Procesado"
+
+msgid "Ignored"
+msgstr "Ignorado"
 
 msgid "Okay"
 msgstr "Okay"
@@ -120,9 +146,6 @@ msgstr "Error"
 
 msgid "resource_id"
 msgstr "id de recurso"
-
-msgid "processed"
-msgstr "procesado"
 
 msgid "last_update"
 msgstr "última actualización"

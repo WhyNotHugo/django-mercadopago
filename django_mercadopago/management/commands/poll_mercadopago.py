@@ -5,7 +5,7 @@ from django_mercadopago.models import Preference
 
 
 class Command(BaseCommand):
-    help = _("Poll MercadoPago to fetch and possible updates to unpaid Preferences")
+    help = _("Poll MercadoPago to fetch and possible updates to unpaid Preferences.")
 
     def handle(self, *args, **options):
         for preference in Preference.objects.filter(paid=False,).order_by("-pk"):
