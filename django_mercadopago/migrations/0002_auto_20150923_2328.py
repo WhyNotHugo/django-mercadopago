@@ -6,24 +6,27 @@ from django.db import models
 
 
 def fake_data(apps, schema_editor):
+    db_alias = schema_editor.connection.alias
     Account = apps.get_model("mp", "Account")
     Notification = apps.get_model("mp", "Notification")
     Payment = apps.get_model("mp", "Payment")
 
     # Only generate this if we have actual data in the DB:
     if (
-        Account.objects.count() + Notification.objects.count() + Payment.objects.count()
+        Account.objects.using(db_alias).count()
+        + Notification.objects.using(db_alias).count()
+        + Payment.objects.using(db_alias).count()
         == 0
     ):
         return
 
-    account = Account.objects.create(
+    account = Account.objects.using(db_alias).create(
         name="Auto-migrated", slug="_", app_id="_", secret_key="_", sandbox=True,
     )
-    Notification.objects.update(owner=account)
+    Notification.objects.using(db_alias).update(owner=account)
 
-    for payment in Payment.objects.all():
-        payment.notification = Notification.objects.create(
+    for payment in Payment.objects.using(db_alias).all():
+        payment.notification = Notification.objects.using(db_alias).create(
             id=-payment.id, owner=account, topic="f", resource_id=str(-payment.id)
         )
         payment.save()
