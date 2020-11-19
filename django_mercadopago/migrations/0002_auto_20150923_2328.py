@@ -4,6 +4,7 @@ from django.db import models
 
 def fake_data(apps, schema_editor):
     db_alias = schema_editor.connection.alias
+
     Account = apps.get_model("mp", "Account")
     Notification = apps.get_model("mp", "Notification")
     Payment = apps.get_model("mp", "Payment")
@@ -18,7 +19,11 @@ def fake_data(apps, schema_editor):
         return
 
     account = Account.objects.using(db_alias).create(
-        name="Auto-migrated", slug="_", app_id="_", secret_key="_", sandbox=True,
+        name="Auto-migrated",
+        slug="_",
+        app_id="_",
+        secret_key="_",
+        sandbox=True,
     )
     Notification.objects.using(db_alias).update(owner=account)
 
