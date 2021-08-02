@@ -4,24 +4,20 @@ on: [push]
 
 jobs:
   tests:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         python: [ '3.5', '3.6', '3.7', '3.8' ]
     name: python${{ matrix.python }}
     steps:
-      - uses: actions/checkout@master
-      - uses: actions/setup-python@v1
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python }}
-          architecture: x64
-      - name: Install test dependencies
-        run: pip install tox codecov
-      - name: Run tests
-        run: tox
+      - run: pip install tox codecov
+      - run: tox
         env:
           TOXENV: py
-      - name: Report coverage
-        run: codecov
+      - run: codecov
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
