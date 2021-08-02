@@ -55,7 +55,11 @@ class NotificationView(CSRFExemptMixin, View):
                 errors,
                 extra={"stack": True},
             )
-            return HttpResponse(errors, status=400, content_type="application/json",)
+            return HttpResponse(
+                errors,
+                status=400,
+                content_type="application/json",
+            )
 
         notification, created = _create_notification(
             reference,
@@ -63,7 +67,10 @@ class NotificationView(CSRFExemptMixin, View):
             resource_id=form.cleaned_data["id"],
         )
 
-        return JsonResponse({"created": created}, status=201 if created else 200,)
+        return JsonResponse(
+            {"created": created},
+            status=201 if created else 200,
+        )
 
     def get(self, request, reference):
         form = forms.NotificationForm(request.GET)
@@ -96,7 +103,10 @@ class PaymentSuccessView(CSRFExemptMixin, View):
             resource_id=request.GET.get("collection_id"),
         )
 
-        return redirect(settings.MERCADOPAGO["success_url"], pk=notification.pk,)
+        return redirect(
+            settings.MERCADOPAGO["success_url"],
+            pk=notification.pk,
+        )
 
 
 class PaymentFailedView(CSRFExemptMixin, View):
@@ -104,7 +114,10 @@ class PaymentFailedView(CSRFExemptMixin, View):
         logger.info("Reached payment failure view with data: %r", request.GET)
         preference = Preference.objects.get(reference=reference)
 
-        return redirect(settings.MERCADOPAGO["failure_url"], pk=preference.pk,)
+        return redirect(
+            settings.MERCADOPAGO["failure_url"],
+            pk=preference.pk,
+        )
 
 
 class PaymentPendingView(CSRFExemptMixin, View):
@@ -112,4 +125,7 @@ class PaymentPendingView(CSRFExemptMixin, View):
         logger.info("Reached payment pending view with data: %r", request.GET)
         preference = Preference.objects.get(reference=reference)
 
-        return redirect(settings.MERCADOPAGO["pending_url"], pk=preference.pk,)
+        return redirect(
+            settings.MERCADOPAGO["pending_url"],
+            pk=preference.pk,
+        )

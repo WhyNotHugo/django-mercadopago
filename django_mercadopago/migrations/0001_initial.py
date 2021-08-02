@@ -76,6 +76,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AlterUniqueTogether(
-            name="notification", unique_together={("topic", "resource_id")},
+            name="notification",
+            unique_together={("topic", "resource_id")},
         ),
     ]

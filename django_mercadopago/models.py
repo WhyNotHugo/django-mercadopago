@@ -97,9 +97,17 @@ class Preference(models.Model):
         help_text=_("The id MercadoPago has assigned for this Preference"),
     )
 
-    payment_url = models.URLField(_("payment url"),)
-    sandbox_url = models.URLField(_("sandbox url"),)
-    reference = models.CharField(_("reference"), max_length=128, unique=True,)
+    payment_url = models.URLField(
+        _("payment url"),
+    )
+    sandbox_url = models.URLField(
+        _("sandbox url"),
+    )
+    reference = models.CharField(
+        _("reference"),
+        max_length=128,
+        unique=True,
+    )
     paid = models.BooleanField(
         _("paid"),
         default=False,
@@ -141,7 +149,9 @@ class Preference(models.Model):
         self.save()
 
     def submit(
-        self, extra_fields=None, host=settings.MERCADOPAGO["base_host"],
+        self,
+        extra_fields=None,
+        host=settings.MERCADOPAGO["base_host"],
     ):
         """
         Submit this preference to MercadoPago's API.
@@ -162,9 +172,18 @@ class Preference(models.Model):
         extra_fields = extra_fields or {}
 
         notification_url = host + reverse("mp:notifications", args=(self.reference,))
-        success_url = host + reverse("mp:payment_success", args=(self.reference,),)
-        failure_url = host + reverse("mp:payment_failure", args=(self.reference,),)
-        pending_url = host + reverse("mp:payment_pending", args=(self.reference,),)
+        success_url = host + reverse(
+            "mp:payment_success",
+            args=(self.reference,),
+        )
+        failure_url = host + reverse(
+            "mp:payment_failure",
+            args=(self.reference,),
+        )
+        pending_url = host + reverse(
+            "mp:payment_pending",
+            args=(self.reference,),
+        )
 
         request = {
             "auto_return": "all",
@@ -234,11 +253,26 @@ class Item(models.Model):
         related_name="items",
         on_delete=models.PROTECT,
     )
-    title = models.CharField(_("title"), max_length=256,)
-    currency_id = models.CharField(_("currency id"), default="ARS", max_length=3,)
-    description = models.CharField(_("description"), max_length=256,)
-    quantity = models.PositiveSmallIntegerField(default=1,)
-    unit_price = models.DecimalField(max_digits=9, decimal_places=2,)
+    title = models.CharField(
+        _("title"),
+        max_length=256,
+    )
+    currency_id = models.CharField(
+        _("currency id"),
+        default="ARS",
+        max_length=3,
+    )
+    description = models.CharField(
+        _("description"),
+        max_length=256,
+    )
+    quantity = models.PositiveSmallIntegerField(
+        default=1,
+    )
+    unit_price = models.DecimalField(
+        max_digits=9,
+        decimal_places=2,
+    )
 
     def serialize(self):
         return {
@@ -281,7 +315,9 @@ class PaymentManager(models.Manager):
         }
 
         payment, created = Payment.objects.update_or_create(
-            preference=preference, mp_id=raw_data["id"], defaults=payment_data,
+            preference=preference,
+            mp_id=raw_data["id"],
+            defaults=payment_data,
         )
 
         if payment.status == "approved" and payment.status_detail == "accredited":
@@ -289,7 +325,8 @@ class PaymentManager(models.Manager):
             preference.save()
 
             signals.payment_received.send(
-                sender=Preference, payment=payment,
+                sender=Preference,
+                payment=payment,
             )
 
         return payment
@@ -300,7 +337,10 @@ class Payment(models.Model):
     A payment received, related to a preference.
     """
 
-    mp_id = models.BigIntegerField(_("mp id"), unique=True,)
+    mp_id = models.BigIntegerField(
+        _("mp id"),
+        unique=True,
+    )
 
     preference = models.ForeignKey(
         Preference,
@@ -308,11 +348,22 @@ class Payment(models.Model):
         related_name="payments",
         on_delete=models.PROTECT,
     )
-    status = models.CharField(_("status"), max_length=16,)
-    status_detail = models.CharField(_("status detail"), max_length=32,)
+    status = models.CharField(
+        _("status"),
+        max_length=16,
+    )
+    status_detail = models.CharField(
+        _("status detail"),
+        max_length=32,
+    )
 
-    created = models.DateTimeField(_("created"),)
-    approved = models.DateTimeField(_("approved"), null=True,)
+    created = models.DateTimeField(
+        _("created"),
+    )
+    approved = models.DateTimeField(
+        _("approved"),
+        null=True,
+    )
 
     notification = models.OneToOneField(
         "Notification",
@@ -325,7 +376,10 @@ class Payment(models.Model):
     )
 
     def __repr__(self):
-        return "<Payment {}: mp_id: {}>".format(self.id, self.mp_id,)
+        return "<Payment {}: mp_id: {}>".format(
+            self.id,
+            self.mp_id,
+        )
 
     def __str__(self):
         return str(self.mp_id)
@@ -370,9 +424,21 @@ class Notification(models.Model):
     )
     topic = models.CharField(
         max_length=1,
-        choices=((TOPIC_ORDER, "Merchant Order",), (TOPIC_PAYMENT, "Payment",),),
+        choices=(
+            (
+                TOPIC_ORDER,
+                "Merchant Order",
+            ),
+            (
+                TOPIC_PAYMENT,
+                "Payment",
+            ),
+        ),
     )
-    resource_id = models.CharField(_("resource_id"), max_length=46,)
+    resource_id = models.CharField(
+        _("resource_id"),
+        max_length=46,
+    )
     preference = models.ForeignKey(
         Preference,
         verbose_name=_("preference"),
@@ -385,10 +451,18 @@ class Notification(models.Model):
     def processed(self):
         return self.status == Notification.STATUS_PROCESSED
 
-    last_update = models.DateTimeField(_("last_update"), auto_now=True,)
+    last_update = models.DateTimeField(
+        _("last_update"),
+        auto_now=True,
+    )
 
     class Meta:
-        unique_together = (("topic", "resource_id",),)
+        unique_together = (
+            (
+                "topic",
+                "resource_id",
+            ),
+        )
 
     @transaction.atomic
     def process(self):
@@ -431,7 +505,10 @@ class Notification(models.Model):
 
     def __repr__(self):
         return "<Notification {}: {} {}, owner: {}>".format(
-            self.id, self.get_topic_display(), self.resource_id, self.owner_id,
+            self.id,
+            self.get_topic_display(),
+            self.resource_id,
+            self.owner_id,
         )
 
     def __str__(self):

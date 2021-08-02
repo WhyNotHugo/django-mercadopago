@@ -9,7 +9,10 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(model_name="notification", name="processed",),
+        migrations.RemoveField(
+            model_name="notification",
+            name="processed",
+        ),
         migrations.AlterField(
             model_name="notification",
             name="status",
