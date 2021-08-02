@@ -9,7 +9,16 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(model_name="preference", name="price",),
-        migrations.RemoveField(model_name="preference", name="quantity",),
-        migrations.RemoveField(model_name="preference", name="title",),
+        migrations.RemoveField(
+            model_name="preference",
+            name="price",
+        ),
+        migrations.RemoveField(
+            model_name="preference",
+            name="quantity",
+        ),
+        migrations.RemoveField(
+            model_name="preference",
+            name="title",
+        ),
     ]

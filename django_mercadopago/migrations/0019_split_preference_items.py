@@ -22,19 +22,36 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("title", models.CharField(max_length=256, verbose_name="title",),),
+                (
+                    "title",
+                    models.CharField(
+                        max_length=256,
+                        verbose_name="title",
+                    ),
+                ),
                 (
                     "currency_id",
                     models.CharField(
-                        default="ARS", max_length=3, verbose_name="currency id",
+                        default="ARS",
+                        max_length=3,
+                        verbose_name="currency id",
                     ),
                 ),
                 (
                     "description",
-                    models.CharField(max_length=256, verbose_name="description",),
+                    models.CharField(
+                        max_length=256,
+                        verbose_name="description",
+                    ),
                 ),
-                ("quantity", models.PositiveSmallIntegerField(default=1),),
-                ("unit_price", models.DecimalField(decimal_places=2, max_digits=9),),
+                (
+                    "quantity",
+                    models.PositiveSmallIntegerField(default=1),
+                ),
+                (
+                    "unit_price",
+                    models.DecimalField(decimal_places=2, max_digits=9),
+                ),
             ],
             options={"verbose_name": "item", "verbose_name_plural": "items"},
         ),

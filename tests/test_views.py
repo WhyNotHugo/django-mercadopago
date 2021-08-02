@@ -65,7 +65,8 @@ class CreateNotificationTestCase(TestCase):
         self.assertEqual(notification.owner, self.account)
         self.assertEqual(notification.preference, self.preference)
         self.assertEqual(
-            notification.status, models.Notification.STATUS_PENDING,
+            notification.status,
+            models.Notification.STATUS_PENDING,
         )
 
     def test_existing_notification(self):
@@ -92,7 +93,8 @@ class CreateNotificationTestCase(TestCase):
         self.assertEqual(notification.owner, self.account)
         self.assertEqual(notification.preference, self.preference)
         self.assertEqual(
-            notification.status, models.Notification.STATUS_PENDING,
+            notification.status,
+            models.Notification.STATUS_PENDING,
         )
 
     # XXX: Add tests for POST notifications
@@ -107,12 +109,18 @@ class PaymentSuccessViewTestCase(TestCase):
         view.request = RequestFactory().get("/mp/success")
         view.request.GET = {"collection_id": 134783145}
 
-        with patch("django_mercadopago.views.redirect", spec=True,) as mocked_redirect:
+        with patch(
+            "django_mercadopago.views.redirect",
+            spec=True,
+        ) as mocked_redirect:
             result = view.get(view.request, self.preference.reference)
 
         self.assertEqual(
             result,
-            mocked_redirect("mp_success", pk=models.Notification.objects.last(),),
+            mocked_redirect(
+                "mp_success",
+                pk=models.Notification.objects.last(),
+            ),
         )
 
 
@@ -124,10 +132,19 @@ class PaymentFailureViewTestCase(TestCase):
         view = views.PaymentFailedView()
         view.request = RequestFactory().get("/mp/failure")
 
-        with patch("django_mercadopago.views.redirect", spec=True,) as mocked_redirect:
+        with patch(
+            "django_mercadopago.views.redirect",
+            spec=True,
+        ) as mocked_redirect:
             result = view.get(view.request, self.preference.reference)
 
-        self.assertEqual(result, mocked_redirect("mp_failure", pk=self.preference.pk,))
+        self.assertEqual(
+            result,
+            mocked_redirect(
+                "mp_failure",
+                pk=self.preference.pk,
+            ),
+        )
 
 
 class PaymentPendingViewTestCase(TestCase):
@@ -138,7 +155,16 @@ class PaymentPendingViewTestCase(TestCase):
         view = views.PaymentPendingView()
         view.request = RequestFactory().get("/mp/pending")
 
-        with patch("django_mercadopago.views.redirect", spec=True,) as mocked_redirect:
+        with patch(
+            "django_mercadopago.views.redirect",
+            spec=True,
+        ) as mocked_redirect:
             result = view.get(view.request, self.preference.reference)
 
-        self.assertEqual(result, mocked_redirect("mp_pending", pk=self.preference.pk,))
+        self.assertEqual(
+            result,
+            mocked_redirect(
+                "mp_pending",
+                pk=self.preference.pk,
+            ),
+        )

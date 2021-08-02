@@ -97,7 +97,10 @@ def test_preference_request():
         status=200,
     )
 
-    preference = fixtures.PreferenceFactory(mp_id=None, reference="ref-123",)
+    preference = fixtures.PreferenceFactory(
+        mp_id=None,
+        reference="ref-123",
+    )
     fixtures.ItemFactory(preference=preference, title="Test")
     preference.submit()
 
@@ -156,7 +159,10 @@ def test_preference_creation():
         status=200,
     )
 
-    preference = fixtures.PreferenceFactory(mp_id=None, reference="ref-123",)
+    preference = fixtures.PreferenceFactory(
+        mp_id=None,
+        reference="ref-123",
+    )
     fixtures.ItemFactory(preference=preference, title="Test")
     preference.submit()
 
