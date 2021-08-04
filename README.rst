@@ -1,9 +1,9 @@
 django-mercadopago
 ==================
 
-.. image:: https://travis-ci.com/WhyNotHugo/django-mercadopago.svg?branch=master
-  :target: https://travis-ci.com/WhyNotHugo/django-mercadopago
-  :alt: build status
+.. image:: https://github.com/WhyNotHugo/django-mercadopago/actions/workflows/tests.yml/badge.svg
+  :target: https://github.com/WhyNotHugo/django-mercadopago/actions/workflows/tests.yml
+  :alt: Tests
 
 .. image:: https://codecov.io/gh/whynothugo/django-mercadopago/branch/master/graph/badge.svg
   :target: https://codecov.io/gh/whynothugo/django-mercadopago
