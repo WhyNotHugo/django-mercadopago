@@ -120,12 +120,13 @@ class Preference(models.Model):
             return self.sandbox_url
         else:
             return self.payment_url
+
     @property
     def update_items(self):
         """
         Updates the Preference items.
         """
-      
+
         service = self.owner.service
         service.update_preference(
             self.mp_id,
@@ -133,6 +134,7 @@ class Preference(models.Model):
                 "items": [item.serialize() for item in self.items.all()],
             },
         )
+
     def update(self, title=None, price=None, quantity=None):
         """
         Updates the upstream Preference with the supplied title and price.
