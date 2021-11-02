@@ -14,11 +14,11 @@ repos:
     hooks:
     -   id: reorder-python-imports
   - repo: https://github.com/psf/black
-    rev: "21.9b0"
+    rev: "21.10b0"
     hooks:
       - id: black
   - repo: https://github.com/PyCQA/flake8
-    rev: "3.9.2" # pick a git hash / tag to point to
+    rev: "4.0.1" # pick a git hash / tag to point to
     hooks:
       - id: flake8
         additional_dependencies: [flake8-comprehensions, flake8-import-order, flake8-bugbear]
