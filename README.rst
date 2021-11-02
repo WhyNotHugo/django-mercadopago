@@ -1,13 +1,6 @@
 django-mercadopago
 ==================
 
-**THIS LIBRARY IS UNMAINTAINED**
-
-We've merged our code into `django-payments <https://github.com/jazzband/django-payments>`_.
-It has a cleaner API, and supports several other payment providers under the hood.
-
-It's recommended that you use that library instead.
-
 .. image:: https://github.com/WhyNotHugo/django-mercadopago/actions/workflows/tests.yml/badge.svg
   :target: https://github.com/WhyNotHugo/django-mercadopago/actions/workflows/tests.yml
   :alt: Tests
@@ -24,7 +17,16 @@ It's recommended that you use that library instead.
   :target: https://github.com/WhyNotHugo/django-mercadopago/blob/master/LICENCE
   :alt: licence
 
-**django-mercadopago** is a simple django application for interacting with
+**THIS LIBRARY IS UNMAINTAINED**
+
+We've merged our code into `django-payments <https://github.com/jazzband/django-payments>`_.
+It has a cleaner API, and supports several other payment providers under the hood.
+
+It's recommended that you use that library instead.
+
+---
+
+**django-mercadopago** was a simple django application for interacting with
 `MercadoPago <https://www.mercadopago.com.ar/>`_, aiming to be rather simple,
 and only covers the basic uses cases.
 
