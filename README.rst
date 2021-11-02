@@ -3,7 +3,7 @@ django-mercadopago
 
 **THIS LIBRARY IS UNMAINTAINED**
 
-We've merged our code into **`django-payments <https://github.com/jazzband/django-payments`_**.
+We've merged our code into **`django-payments <https://github.com/jazzband/django-payments>`_**.
 It has a cleaner API, and supports several other payment providers under the hood.
 
 It's recommended that you use that library instead.
